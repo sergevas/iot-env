@@ -26,7 +26,7 @@ public class PiGpioFactory {
                     try {
                         Profiler.init("GpioFactory.createOutputInstance()");
                         Optional.ofNullable(pi4jContext).orElseGet(() -> {
-                            pi4jContext = Pi4JContextFactory.create();
+                            pi4jContext = I2CBusFactory.create();
                             LOG.log(Level.FINE, Profiler.getCurrentMsg("GpioFactory.createOutputInstance()", "Pi4J.newAutoContext()"));
                             return pi4jContext;
                         });

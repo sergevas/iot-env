@@ -1,8 +1,7 @@
 package dev.sergevas.iot.env.hardware.boundary;
 
-import com.pi4j.context.Context;
-import com.pi4j.io.i2c.I2C;
-import com.pi4j.io.i2c.I2CProvider;
+import com.pi4j.io.i2c.I2CBus;
+import com.pi4j.io.i2c.I2CDevice;
 import dev.sergevas.iot.env.performance.controller.Profiler;
 import dev.sergevas.iot.env.shared.controller.ExceptionUtils;
 
@@ -17,34 +16,23 @@ public class I2CDeviceFactory {
     private static final String CLASS_NAME = I2CDeviceFactory.class.getName();
     private static final Logger LOG = Logger.getLogger(CLASS_NAME);
 
-    public static final int I2C_BUS = 1;
+    private static Map<String, I2CDevice> i2CDeviceInstances = new HashMap<>();
 
-    private static Map<String, I2C> i2CDeviceInstances = new HashMap<>();
+    public static I2CBus i2CBus;
 
-    private static Context pi4jContext;
-    public static I2CProvider i2CProvider;
-
-    public static I2C getDeviceInstance(String instanceId, int i2CDeviceAddr) {
+    public static I2CDevice getDeviceInstance(String instanceId, int i2CDeviceAddr) {
         LOG.log(Level.FINE, CLASS_NAME + "getDeviceInstance(" + instanceId + ", " + i2CDeviceAddr + ")");
         return Optional.ofNullable(i2CDeviceInstances.get(instanceId))
                 .orElseGet(() -> {
                     try {
-                        Profiler.init("I2CDeviceFactory.create()");
-                        Optional.ofNullable(pi4jContext).orElseGet(() -> {
-                            pi4jContext = Pi4JContextFactory.create();
-                            LOG.log(Level.FINE, Profiler.getCurrentMsg("I2CDeviceFactory.create()", "Pi4J.newAutoContext()"));
-                            i2CProvider = pi4jContext.provider("pigpio-i2c");
-                            LOG.log(Level.FINE, Profiler.getCurrentMsg("I2CDeviceFactory.create()", "Pi4J.provider()"));
-                            return pi4jContext;
+                        Profiler.init("I2CBusFactory.create()");
+                        Optional.ofNullable(i2CBus).orElseGet(() -> {
+                            i2CBus = I2CBusFactory.create();
+                            LOG.log(Level.FINE, Profiler.getCurrentMsg("I2CBusFactory.create()", "I2CBusFactory.create()"));
+                            return i2CBus;
                         });
-                        var config = I2C.newConfigBuilder(pi4jContext)
-                                .id(instanceId)
-                                .bus(I2C_BUS)
-                                .device(i2CDeviceAddr)
-                                .build();
-                        LOG.log(Level.FINE, Profiler.getCurrentMsg("I2CDeviceFactory.create()", "I2C.newConfigBuilder()"));
-                        var i2cDevice = i2CProvider.create(config);
-                        LOG.log(Level.FINE, Profiler.getCurrentMsg("I2CDeviceFactory.create()", "i2CProvider.create(config)"));
+                        I2CDevice i2cDevice = i2CBus.getDevice(i2CDeviceAddr);
+                        LOG.log(Level.FINE, Profiler.getCurrentMsg("I2CDeviceFactory.create()", "I2CBus.getDevice()"));
                         i2CDeviceInstances.put(instanceId, i2cDevice);
                         return i2cDevice;
                     } catch (Exception e) {
@@ -52,14 +40,5 @@ public class I2CDeviceFactory {
                         throw new HardwareException("Unable to create I2C device", e);
                     }
                 });
-    }
-
-    public static void close(String instanceId) {
-        try {
-            Optional.ofNullable(i2CDeviceInstances.get(instanceId)).ifPresent(I2C::close);
-        } catch (Exception e) {
-            LOG.log(Level.SEVERE, ExceptionUtils.getStackTrace(e));
-            throw new HardwareException("Unable to close I2C device");
-        }
     }
 }

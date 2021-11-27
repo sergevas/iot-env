@@ -5,7 +5,6 @@ import dev.sergevas.iot.env.shared.boundary.SensorsErrorHandler;
 import dev.sergevas.iot.env.shared.boundary.SensorsHttpService;
 import dev.sergevas.iot.env.shared.exception.ActuatorException;
 import dev.sergevas.iot.env.shared.exception.SensorException;
-import dev.sergevas.iot.env.hardware.boundary.Pi4JContextFactory;
 import dev.sergevas.iot.env.hardware.boundary.SystemInfoHealthCheck;
 import dev.sergevas.iot.env.shared.boundary.ActuatorsErrorHandler;
 import dev.sergevas.iot.env.shared.boundary.ActuatorsHttpService;
@@ -49,7 +48,6 @@ public final class Main {
                     System.out.println("GrowLab server is up! http://0.0.0.0:" + ws.port() + "/growlab/api/v1");
                     ws.whenShutdown().thenRun(() -> {
                         Pi4JContextFactory.shutdown();
-                        PiCamAdapter.create().closeCamera();
                         System.out.println("GrowLab server is down.");
                     });
                 })
