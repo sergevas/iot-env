@@ -1,17 +1,13 @@
 openapi: 3.0.2
 info:
-  title: 'OpenAPI spec for Raspberry Pi #growlab resources'
+  title: 'OpenAPI spec for an environmental data gathering IoT field device API resources'
   version: 1.0.0
   description: |-
-    OpenAPI spec for Raspberry Pi #growlab resources:
-      - GET temperature, humidity, and pressure readings
-      - GET light intensity readings
-      - GET RPi Camera module image
-      - GET RPi Camera module current mode
-      - PUT to set RPi Camera module current mode
+    OpenAPI spec for an environment data gathering IoT field device API resources:
+      - GET temperature, humidity, pressure, light intensity readings
       - GET Health checks
 servers:
-  - url: 'http://192.168.1.87:8080/growlab/api/v1'
+  - url: 'http://192.168.1.87:8080/iotenv/api/v1'
     description: The field device endpoint
 paths:
   /actuators/camera/image:
@@ -333,13 +329,6 @@ components:
       example:
         mode: NORM
   responses:
-    image_response:
-      content:
-        application/octet-stream:
-          schema:
-            type: string
-            format: binary
-      description: A camera inage binary content
     sensor_error:
       content:
         application/json:
