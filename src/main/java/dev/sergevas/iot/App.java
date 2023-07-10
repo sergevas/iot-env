@@ -22,6 +22,7 @@ public class App {
 	}
 
 	private static void blinkLedWithChipInfo(int chip, int line) {
+		Logger.info("blinkLedWithChipInfo({}, {})", chip, line);
 		PinInfo pin_info = DeviceFactoryHelper.getNativeDeviceFactory().getBoardPinInfo()
 				.getByChipAndLineOffsetOrThrow(chip, line);
 		try (LED led = new LED(pin_info, true, false)) {
@@ -43,6 +44,7 @@ public class App {
 	}
 
 	private static void blinkLed(int gpio) {
+		Logger.info("blinkLed({})", gpio);
 		try (LED led = new LED(gpio)) {
 			for (int i=0; i<5; i++) {
 				Logger.info("LED on");
