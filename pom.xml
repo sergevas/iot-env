@@ -52,6 +52,17 @@
 				<plugin>
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>3.3.0</version>
+					<configuration>
+						<archive>
+							<manifest>
+								<addClasspath>true</addClasspath>
+								<classpathPrefix>libs/</classpathPrefix>
+								<mainClass>
+									dev.sergevas.iot.App
+								</mainClass>
+							</manifest>
+						</archive>
+					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>
