@@ -1,6 +1,6 @@
 package dev.sergevas.iot.env.shared.exception;
 
-import dev.sergevas.iot.env.shared.model.SensorType;
+import dev.sergevas.iot.env.shared.entity.SensorType;
 
 public class SensorException extends RuntimeException {
 
@@ -33,7 +33,6 @@ public class SensorException extends RuntimeException {
         this.eventId = eventId;
         this.sensorType = sensorType;
     }
-
 
 
     public SensorException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {

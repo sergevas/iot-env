@@ -8,29 +8,25 @@
   <name>${project.artifactId}</name>
 
   <properties>
-    <compiler-plugin.version>3.8.1</compiler-plugin.version>
-    <maven.compiler.parameters>true</maven.compiler.parameters>
     <maven.compiler.source>8</maven.compiler.source>
     <maven.compiler.target>8</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <mainClass>dev.sergevas.iot.env.Main</mainClass>
-    <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
+    <spring-boot.version>2.7.13</spring-boot.version>
+    <spring-boot-thin-layout.version>1.0.30.RELEASE</spring-boot-thin-layout.version>
     <pi4j.version>1.3</pi4j.version>
-    <slf4j.version>2.0.0-alpha2</slf4j.version>
-    <junit.version>5.7.2</junit.version>
     <rpi.ip>192.168.1.87</rpi.ip>
     <app.root.dir>/home/root/iot-env/app</app.root.dir>
   </properties>
 
   <parent>
-    <groupId>io.helidon.applications</groupId>
-    <artifactId>helidon-se</artifactId>
-    <version>1.4.10</version>
-    <relativePath/>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.7.13</version>
+    <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
-  <repositories>
+  <!--<repositories>
     <repository>
       <id>oss-snapshots-repo</id>
       <name>Sonatype OSS Maven Repository</name>
@@ -42,56 +38,45 @@
         <enabled>true</enabled>
       </snapshots>
     </repository>
-  </repositories>
+  </repositories>-->
 
   <dependencies>
     <dependency>
-      <groupId>io.helidon.bundles</groupId>
-      <artifactId>helidon-bundles-webserver</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
     <dependency>
-      <groupId>io.helidon.config</groupId>
-      <artifactId>helidon-config-yaml</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.helidon.health</groupId>
-      <artifactId>helidon-health</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.helidon.health</groupId>
-      <artifactId>helidon-health-checks</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.helidon.media.jsonp</groupId>
-      <artifactId>helidon-media-jsonp-server</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>io.helidon.openapi</groupId>
-      <artifactId>helidon-openapi</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-webflux</artifactId>
     </dependency>
 
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <scope>runtime</scope>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-test</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.springframework/spring-context-indexer -->
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-context-indexer</artifactId>
+      <version>5.3.28</version>
+      <scope>optional</scope>
+    </dependency>
     <dependency>
       <groupId>com.pi4j</groupId>
       <artifactId>pi4j-core</artifactId>
       <version>${pi4j.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <version>${slf4j.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
     </dependency>
 
   </dependencies>
@@ -144,9 +129,9 @@
       </plugin>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler-plugin.version}</version>
+        <version>3.11.0</version>
         <configuration>
-          <parameters>${maven.compiler.parameters}</parameters>
+          <parameters>true</parameters>
         </configuration>
       </plugin>
       <plugin>
@@ -159,24 +144,32 @@
         </executions>
       </plugin>
       <plugin>
-        <groupId>io.helidon.build-tools</groupId>
-        <artifactId>helidon-maven-plugin</artifactId>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring-boot.version}</version>
+        <dependencies>
+          <dependency>
+            <groupId>org.springframework.boot.experimental</groupId>
+            <artifactId>spring-boot-thin-layout</artifactId>
+            <version>${spring-boot-thin-layout.version}</version>
+          </dependency>
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.springframework.boot.experimental</groupId>
+        <artifactId>spring-boot-thin-maven-plugin</artifactId>
+        <version>${spring-boot-thin-layout.version}</version>
         <executions>
           <execution>
-            <id>third-party-license-report</id>
+            <id>resolve</id>
+            <goals>
+              <goal>resolve</goal>
+            </goals>
+            <inherited>false</inherited>
           </execution>
         </executions>
       </plugin>
-<!--      <plugin>-->
-<!--        <artifactId>maven-surefire-plugin</artifactId>-->
-<!--        <version>${surefire-plugin.version}</version>-->
-<!--        <configuration>-->
-<!--          <systemPropertyVariables>-->
-<!--            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>-->
-<!--            <maven.home>${maven.home}</maven.home>-->
-<!--          </systemPropertyVariables>-->
-<!--        </configuration>-->
-<!--      </plugin>-->
+
     </plugins>
   </build>
 </project>

@@ -1,9 +1,0 @@
-server:
-  port: 8088
-  host: 0.0.0.0
-
-bh1750:
-  moduleAddress: 0x23  #Default address for the GY-302 BH1750 module
-bmep280:
-  moduleAddress: 0x76
-  forcedModeTimeout: 2000
