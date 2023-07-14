@@ -4,6 +4,10 @@ import dev.sergevas.iot.env.bh1750.boundary.Bh1750Adapter;
 import dev.sergevas.iot.env.bh1750.boundary.Bh1750Handler;
 import dev.sergevas.iot.env.bh1750.control.Bh1750Service;
 import dev.sergevas.iot.env.hardware.adapter.I2CBusProvider;
+import dev.sergevas.iot.env.system.boundary.CpuTempProcessBuilder;
+import dev.sergevas.iot.env.system.boundary.SystemInfoAdapter;
+import dev.sergevas.iot.env.system.boundary.SystemInfoHandler;
+import dev.sergevas.iot.env.system.control.SystemInfoService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.web.reactive.HttpHandlerAutoConfiguration;
 import org.springframework.boot.autoconfigure.web.reactive.ReactiveWebServerFactoryAutoConfiguration;
@@ -32,6 +36,7 @@ public class EnvDeviceApp {
                 .sources(autoConfigurationClasses)
                 .initializers((GenericApplicationContext applicationContext) -> {
                     applicationContext.registerBean(I2CBusProvider.class, I2CBusProvider::new);
+
                     applicationContext.registerBean(Bh1750Adapter.class,
                             () -> new Bh1750Adapter(applicationContext.getBean(I2CBusProvider.class),
                                     applicationContext.getEnvironment().getProperty("bh1750.moduleAddress", Integer.class)));
@@ -40,9 +45,19 @@ public class EnvDeviceApp {
                     applicationContext.registerBean(Bh1750Handler.class,
                             () -> new Bh1750Handler(applicationContext.getBean(Bh1750Service.class)));
 
+                    applicationContext.registerBean(CpuTempProcessBuilder.class, CpuTempProcessBuilder::new);
+                    applicationContext.registerBean(SystemInfoAdapter.class,
+                            () -> new SystemInfoAdapter(applicationContext.getBean(CpuTempProcessBuilder.class)));
+                    applicationContext.registerBean(SystemInfoService.class,
+                            () -> new SystemInfoService(applicationContext.getBean(SystemInfoAdapter.class)));
+                    applicationContext.registerBean(SystemInfoHandler.class,
+                            () -> new SystemInfoHandler(applicationContext.getBean(SystemInfoService.class)));
+
                     applicationContext.registerBean(RouterFunction.class,
                             () -> route(GET("/sensors/bh1750"),
-                                    applicationContext.getBean(Bh1750Handler.class)::getSensorReadings));
+                                    applicationContext.getBean(Bh1750Handler.class)::getSensorReadings)
+                                    .andRoute(GET("/sensors/system"),
+                                            applicationContext.getBean(SystemInfoHandler.class)::getSystemInfoReadings));
                 }).build();
     }
 

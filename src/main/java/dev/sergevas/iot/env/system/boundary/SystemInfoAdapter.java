@@ -15,7 +15,6 @@ public class SystemInfoAdapter {
 
     private static final Logger LOG = LoggerFactory.getLogger(SystemInfoAdapter.class);
 
-    public static final String[] FETCH_CPU_TEMP_CMD = new String[]{"cat", "/sys/class/thermal/thermal_zone0/temp"};
     private final CpuTempProcessBuilder cpuTempProcessBuilder;
 
     public SystemInfoAdapter(CpuTempProcessBuilder cpuTempProcessBuilder) {

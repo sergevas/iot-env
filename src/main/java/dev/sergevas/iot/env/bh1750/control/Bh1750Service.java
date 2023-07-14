@@ -1,6 +1,7 @@
 package dev.sergevas.iot.env.bh1750.control;
 
 import dev.sergevas.iot.env.bh1750.boundary.Bh1750Adapter;
+import dev.sergevas.iot.env.shared.entity.SensorName;
 import dev.sergevas.iot.env.shared.entity.SensorReadingsItemType;
 import dev.sergevas.iot.env.shared.entity.SensorType;
 import org.slf4j.Logger;
@@ -22,10 +23,10 @@ public class Bh1750Service {
         double lightIntensity = bh1750Adapter.getLightIntensity();
         SensorReadingsItemType sensorReadings = new SensorReadingsItemType()
                 .sType(SensorType.LIGHT.name())
-                .sName("BH1750")
+                .sName(SensorName.BH1750.getName())
                 .sTimestamp(OffsetDateTime.now(ZoneOffset.UTC))
                 .sData(String.valueOf(lightIntensity));
-        LOG.debug("{}.getSensorReadingsItemTypeForBh1750() lightIntensity=[{}]", Bh1750Service.class, sensorReadings);
+        LOG.debug("{}.getSensorReadingsItemTypeForBh1750() {}", Bh1750Service.class, sensorReadings);
         return sensorReadings;
     }
 }
