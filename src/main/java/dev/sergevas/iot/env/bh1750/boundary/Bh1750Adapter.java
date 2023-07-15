@@ -4,6 +4,7 @@ import com.pi4j.io.i2c.I2CDevice;
 import dev.sergevas.iot.env.hardware.adapter.I2CBusProvider;
 import dev.sergevas.iot.env.performance.control.Profiler;
 import dev.sergevas.iot.env.shared.entity.ErrorEventId;
+import dev.sergevas.iot.env.shared.entity.SensorName;
 import dev.sergevas.iot.env.shared.entity.SensorType;
 import dev.sergevas.iot.env.shared.exception.SensorException;
 import dev.sergevas.iot.env.transform.control.StringUtil;
@@ -47,7 +48,7 @@ public class Bh1750Adapter implements InitializingBean {
             lightIntensity = fromRawReadingsToLightIntensity(readings);
         } catch (Exception e) {
             LOG.error("Unable to get light intensity", e);
-            throw new SensorException(ErrorEventId.E_BH1750_0001.getId(), SensorType.LIGHT, ErrorEventId.E_BH1750_0001.getName(), e);
+            throw new SensorException(ErrorEventId.E_BH1750_0001.getId(), SensorType.LIGHT, SensorName.BH1750, ErrorEventId.E_BH1750_0001.getName(), e);
         }
         LOG.debug(Profiler.getCurrentMsg("Bh1750Adapter.getLightIntensity()",
                 "getLightIntensityComplete"));

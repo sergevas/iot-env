@@ -1,175 +1,175 @@
 <?xml version="1.0"?>
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>dev.sergevas.iot</groupId>
-  <artifactId>iot-env</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-  <name>${project.artifactId}</name>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>dev.sergevas.iot</groupId>
+    <artifactId>iot-env</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>${project.artifactId}</name>
 
-  <properties>
-    <maven.compiler.source>8</maven.compiler.source>
-    <maven.compiler.target>8</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-    <spring-boot.version>2.7.13</spring-boot.version>
-    <spring-boot-thin-layout.version>1.0.30.RELEASE</spring-boot-thin-layout.version>
-    <pi4j.version>1.3</pi4j.version>
-    <rpi.ip>192.168.1.87</rpi.ip>
-    <app.root.dir>/home/root/iot-env/app</app.root.dir>
-  </properties>
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring-boot.version>2.7.13</spring-boot.version>
+        <spring-boot-thin-layout.version>1.0.30.RELEASE</spring-boot-thin-layout.version>
+        <pi4j.version>1.3</pi4j.version>
+        <rpi.ip>192.168.1.87</rpi.ip>
+        <app.root.dir>/home/root/iot-env/app</app.root.dir>
+    </properties>
 
-  <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.7.13</version>
-    <relativePath/> <!-- lookup parent from repository -->
-  </parent>
-
-  <!--<repositories>
-    <repository>
-      <id>oss-snapshots-repo</id>
-      <name>Sonatype OSS Maven Repository</name>
-      <url>https://oss.sonatype.org/content/groups/public</url>
-      <releases>
-        <enabled>false</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>-->
-
-  <dependencies>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-webflux</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-devtools</artifactId>
-      <scope>runtime</scope>
-      <optional>true</optional>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.projectreactor</groupId>
-      <artifactId>reactor-test</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.springframework/spring-context-indexer -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context-indexer</artifactId>
-      <version>5.3.28</version>
-      <scope>optional</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.pi4j</groupId>
-      <artifactId>pi4j-core</artifactId>
-      <version>${pi4j.version}</version>
-    </dependency>
-
-  </dependencies>
-  <build>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh</artifactId>
-        <version>3.4.3</version>
-      </extension>
-    </extensions>
-    <plugins>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>wagon-maven-plugin</artifactId>
-        <version>2.0.2</version>
-        <executions>
-<!--          <execution>-->
-<!--            <id>uploadNativeLibs</id>-->
-<!--            <phase>install</phase>-->
-<!--            <goals>-->
-<!--              <goal>upload</goal>-->
-<!--            </goals>-->
-<!--            <configuration>-->
-<!--              <serverId>rpiAdev</serverId>-->
-<!--              <fromDir>${project.basedir}/src/main/resources</fromDir>-->
-<!--              <includes>native/*</includes>-->
-<!--              <url>scp://${rpi.ip}${app.root.dir}</url>-->
-<!--            </configuration>-->
-<!--          </execution>-->
-          <execution>
-            <id>uploadApp</id>
-            <phase>install</phase>
-            <goals>
-              <goal>upload</goal>
-              <goal>sshexec</goal>
-            </goals>
-              <configuration>
-                <serverId>rpiAdev</serverId>
-                <fromDir>${project.build.directory}</fromDir>
-                <includes>libs/*,${project.build.finalName}.${project.packaging}</includes>
-                <url>scp://${rpi.ip}${app.root.dir}/helidon</url>
-                <commands>
-                  <command>systemctl restart growlabv1.service</command>
-                </commands>
-                <displayCommandOutputs>true</displayCommandOutputs>
-              </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.11.0</version>
-        <configuration>
-          <parameters>true</parameters>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-dependency-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>copy-libs</id>
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
+    <parent>
         <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${spring-boot.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>org.springframework.boot.experimental</groupId>
-            <artifactId>spring-boot-thin-layout</artifactId>
-            <version>${spring-boot-thin-layout.version}</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <plugin>
-        <groupId>org.springframework.boot.experimental</groupId>
-        <artifactId>spring-boot-thin-maven-plugin</artifactId>
-        <version>${spring-boot-thin-layout.version}</version>
-        <executions>
-          <execution>
-            <id>resolve</id>
-            <goals>
-              <goal>resolve</goal>
-            </goals>
-            <inherited>false</inherited>
-          </execution>
-        </executions>
-      </plugin>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.13</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
 
-    </plugins>
-  </build>
+    <!--<repositories>
+      <repository>
+        <id>oss-snapshots-repo</id>
+        <name>Sonatype OSS Maven Repository</name>
+        <url>https://oss.sonatype.org/content/groups/public</url>
+        <releases>
+          <enabled>false</enabled>
+        </releases>
+        <snapshots>
+          <enabled>true</enabled>
+        </snapshots>
+      </repository>
+    </repositories>-->
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.projectreactor</groupId>
+            <artifactId>reactor-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-context-indexer -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-indexer</artifactId>
+            <version>5.3.29</version>
+        </dependency>
+        <dependency>
+            <groupId>com.pi4j</groupId>
+            <artifactId>pi4j-core</artifactId>
+            <version>${pi4j.version}</version>
+        </dependency>
+
+    </dependencies>
+    <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-ssh</artifactId>
+                <version>3.4.3</version>
+            </extension>
+        </extensions>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>wagon-maven-plugin</artifactId>
+                <version>2.0.2</version>
+                <executions>
+                    <!--          <execution>-->
+                    <!--            <id>uploadNativeLibs</id>-->
+                    <!--            <phase>install</phase>-->
+                    <!--            <goals>-->
+                    <!--              <goal>upload</goal>-->
+                    <!--            </goals>-->
+                    <!--            <configuration>-->
+                    <!--              <serverId>rpiAdev</serverId>-->
+                    <!--              <fromDir>${project.basedir}/src/main/resources</fromDir>-->
+                    <!--              <includes>native/*</includes>-->
+                    <!--              <url>scp://${rpi.ip}${app.root.dir}</url>-->
+                    <!--            </configuration>-->
+                    <!--          </execution>-->
+                    <execution>
+                        <id>uploadApp</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>upload</goal>
+                            <goal>sshexec</goal>
+                        </goals>
+                        <configuration>
+                            <serverId>rpiAdev</serverId>
+                            <fromDir>${project.build.directory}</fromDir>
+                            <includes>libs/*,${project.build.finalName}.${project.packaging}</includes>
+                            <url>scp://${rpi.ip}${app.root.dir}/helidon</url>
+                            <commands>
+                                <command>systemctl restart growlabv1.service</command>
+                            </commands>
+                            <displayCommandOutputs>true</displayCommandOutputs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <parameters>true</parameters>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-libs</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.springframework.boot.experimental</groupId>
+                        <artifactId>spring-boot-thin-layout</artifactId>
+                        <version>${spring-boot-thin-layout.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot.experimental</groupId>
+                <artifactId>spring-boot-thin-maven-plugin</artifactId>
+                <version>${spring-boot-thin-layout.version}</version>
+                <executions>
+                    <execution>
+                        <id>resolve</id>
+                        <goals>
+                            <goal>resolve</goal>
+                        </goals>
+                        <inherited>false</inherited>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
 </project>

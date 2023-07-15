@@ -1,11 +1,13 @@
 package dev.sergevas.iot.env.shared.exception;
 
+import dev.sergevas.iot.env.shared.entity.SensorName;
 import dev.sergevas.iot.env.shared.entity.SensorType;
 
 public class SensorException extends RuntimeException {
 
     private String eventId;
     private SensorType sensorType;
+    private SensorName sensorName;
 
     public SensorException() {
     }
@@ -22,16 +24,18 @@ public class SensorException extends RuntimeException {
         super(cause);
     }
 
-    public SensorException(String eventId, SensorType sensorType, String message, Throwable cause) {
+    public SensorException(String eventId, SensorType sensorType, SensorName sensorName, String message, Throwable cause) {
         super(message, cause);
         this.eventId = eventId;
         this.sensorType = sensorType;
+        this.sensorName = sensorName;
     }
 
-    public SensorException(String eventId, SensorType sensorType, String message) {
+    public SensorException(String eventId, SensorType sensorType, SensorName sensorName, String message) {
         super(message);
         this.eventId = eventId;
         this.sensorType = sensorType;
+        this.sensorName = sensorName;
     }
 
 
@@ -45,5 +49,9 @@ public class SensorException extends RuntimeException {
 
     public SensorType getSensorType() {
         return sensorType;
+    }
+
+    public SensorName getSensorName() {
+        return sensorName;
     }
 }

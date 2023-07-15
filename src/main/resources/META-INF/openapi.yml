@@ -260,8 +260,11 @@ components:
         event_name:
           description: An error event descriptive name
           type: string
+        s_name:
+          description: A sensor type, e.g. BH1750
+          type: string
         s_type:
-          description: A sensor type, e.g. TEMP (temperature)
+          description: A sensor name, e.g. TEMP (temperature)
           type: string
         desc:
           description: An error event detailed info
@@ -274,6 +277,7 @@ components:
         event_id: E-BH1750-0001
         event_name: BH1750 data read error
         s_type: LIGHT
+        s_name: BH1750
         desc: |
           dev.sergevas.iot.env.shared.exception.SensorException:
           BH1750 data read error

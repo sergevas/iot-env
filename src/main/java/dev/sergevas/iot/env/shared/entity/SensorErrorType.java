@@ -15,6 +15,7 @@ public class SensorErrorType {
     private String eventId;
     private String eventName;
     private String sType;
+    private String sName;
     private String desc;
     private OffsetDateTime eventTimestamp;
 
@@ -75,6 +76,25 @@ public class SensorErrorType {
         this.sType = sType;
     }
 
+    public SensorErrorType sName(String sName) {
+        this.sName = sName;
+        return this;
+    }
+
+    /**
+     * A sensor name, e.g. BH1750
+     *
+     * @return sName
+     **/
+    @JsonProperty("s_name")
+    public String getSName() {
+        return sName;
+    }
+
+    public void setSName(String sName) {
+        this.sName = sName;
+    }
+
     public SensorErrorType desc(String desc) {
         this.desc = desc;
         return this;
@@ -126,13 +146,14 @@ public class SensorErrorType {
         return Objects.equals(this.eventId, sensorErrorType.eventId) &&
                 Objects.equals(this.eventName, sensorErrorType.eventName) &&
                 Objects.equals(this.sType, sensorErrorType.sType) &&
+                Objects.equals(this.sName, sensorErrorType.sName) &&
                 Objects.equals(this.desc, sensorErrorType.desc) &&
                 Objects.equals(this.eventTimestamp, sensorErrorType.eventTimestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(eventId, eventName, sType, desc, eventTimestamp);
+        return Objects.hash(eventId, eventName, sType, sName, desc, eventTimestamp);
     }
 
     @Override
@@ -143,6 +164,7 @@ public class SensorErrorType {
         sb.append("    eventId: ").append(toIndentedString(eventId)).append("\n");
         sb.append("    eventName: ").append(toIndentedString(eventName)).append("\n");
         sb.append("    sType: ").append(toIndentedString(sType)).append("\n");
+        sb.append("    sName: ").append(toIndentedString(sName)).append("\n");
         sb.append("    desc: ").append(toIndentedString(desc)).append("\n");
         sb.append("    eventTimestamp: ").append(toIndentedString(eventTimestamp)).append("\n");
         sb.append("}");

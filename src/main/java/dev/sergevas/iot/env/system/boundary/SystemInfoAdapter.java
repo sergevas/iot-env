@@ -1,6 +1,7 @@
 package dev.sergevas.iot.env.system.boundary;
 
 import dev.sergevas.iot.env.performance.control.Profiler;
+import dev.sergevas.iot.env.shared.entity.SensorName;
 import dev.sergevas.iot.env.shared.entity.SensorType;
 import dev.sergevas.iot.env.shared.exception.SensorException;
 import org.slf4j.Logger;
@@ -33,7 +34,7 @@ public class SystemInfoAdapter {
             LOG.debug(Profiler.getCurrentMsg("SystemInfoAdapter.getCpuTemp()", "calcCpuTemp"));
         } catch (Exception e) {
             LOG.error("Unable to get CPU Temp", e);
-            throw new SensorException(E_SYSTEM_0001.getId(), SensorType.CPU_TEMP, E_SYSTEM_0001.getName(), e);
+            throw new SensorException(E_SYSTEM_0001.getId(), SensorType.CPU_TEMP, SensorName.ORANGE_PI_ZERO, E_SYSTEM_0001.getName(), e);
         }
         LOG.debug(Profiler.getCurrentMsg("SystemInfoAdapter.getCpuTemp()", "getCpuTempComplete"));
         return cpuTemp;
