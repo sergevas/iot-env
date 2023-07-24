@@ -156,7 +156,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/sensor_readings_type'
               examples:
-                bme280_thp_readings_example:
+                system_readings_example:
                   value:
                     s_readings:
                       - s_type: CPU_TEMP
