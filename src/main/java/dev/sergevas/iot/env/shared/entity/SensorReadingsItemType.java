@@ -1,117 +1,118 @@
 package dev.sergevas.iot.env.shared.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.json.bind.annotation.JsonbProperty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 /**
  * A structure, containing the BME280 sensor data readings, e.g. temperature, humidity, pressure, etc.
- */
-@JsonInclude(JsonInclude.Include.NON_NULL)
+ **/
+
 public class SensorReadingsItemType {
+    private @Valid String sType;
+    private @Valid String sId;
+    private @Valid String sName;
+    private @Valid String sData;
+    private @Valid OffsetDateTime sTimestamp;
 
-    private String sType;
-    private String sId;
-    private String sName;
-    private String sData;
-    private OffsetDateTime sTimestamp;
-
+    /**
+     * A sensor type, e.g. TEMP (temperature)
+     **/
     public SensorReadingsItemType sType(String sType) {
         this.sType = sType;
         return this;
     }
 
-    /**
-     * A sensor type, e.g. TEMP (temperature)
-     *
-     * @return sType
-     **/
-    @JsonProperty("s_type")
-    public String getSType() {
+
+    @JsonbProperty("s_type")
+    public String getsType() {
         return sType;
     }
 
-    public void setSType(String sType) {
+    @JsonbProperty("s_type")
+    public void setsType(String sType) {
         this.sType = sType;
     }
 
+    /**
+     * Sensor id
+     **/
     public SensorReadingsItemType sId(String sId) {
         this.sId = sId;
         return this;
     }
 
-    /**
-     * Sensor id
-     *
-     * @return sId
-     **/
-    @JsonProperty("s_id")
-    public String getSId() {
+
+    @JsonbProperty("s_id")
+    public String getsId() {
         return sId;
     }
 
-    public void setSId(String sId) {
+    @JsonbProperty("s_id")
+    public void setsId(String sId) {
         this.sId = sId;
     }
 
+    /**
+     * Sensor name
+     **/
     public SensorReadingsItemType sName(String sName) {
         this.sName = sName;
         return this;
     }
 
-    /**
-     * Sensor name
-     *
-     * @return sName
-     **/
-    @JsonProperty("s_name")
-    public String getSName() {
+
+    @JsonbProperty("s_name")
+    public String getsName() {
         return sName;
     }
 
-    public void setSName(String sName) {
+    @JsonbProperty("s_name")
+    public void setsName(String sName) {
         this.sName = sName;
     }
 
+    /**
+     * A sensor readings value
+     **/
     public SensorReadingsItemType sData(String sData) {
         this.sData = sData;
         return this;
     }
 
-    /**
-     * A sensor readings value
-     *
-     * @return sData
-     **/
-    @JsonProperty("s_data")
-    public String getSData() {
+
+    @JsonbProperty("s_data")
+    @NotNull
+    public String getsData() {
         return sData;
     }
 
-    public void setSData(String sData) {
+    @JsonbProperty("s_data")
+    public void setsData(String sData) {
         this.sData = sData;
     }
 
+    /**
+     * Readings fetch timestamp
+     **/
     public SensorReadingsItemType sTimestamp(OffsetDateTime sTimestamp) {
         this.sTimestamp = sTimestamp;
         return this;
     }
 
-    /**
-     * Readings fetch timestamp
-     *
-     * @return sTimestamp
-     **/
-    @JsonProperty("s_timestamp")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    public OffsetDateTime getSTimestamp() {
+
+    @JsonbProperty("s_timestamp")
+    @NotNull
+    public OffsetDateTime getsTimestamp() {
         return sTimestamp;
     }
 
-    public void setSTimestamp(OffsetDateTime sTimestamp) {
+    @JsonbProperty("s_timestamp")
+    public void setsTimestamp(OffsetDateTime sTimestamp) {
         this.sTimestamp = sTimestamp;
     }
 
@@ -139,25 +140,12 @@ public class SensorReadingsItemType {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class SensorReadingsItemType {\n");
-        sb.append("    sType: ").append(toIndentedString(sType)).append("\n");
-        sb.append("    sId: ").append(toIndentedString(sId)).append("\n");
-        sb.append("    sName: ").append(toIndentedString(sName)).append("\n");
-        sb.append("    sData: ").append(toIndentedString(sData)).append("\n");
-        sb.append("    sTimestamp: ").append(toIndentedString(sTimestamp)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
+        return new StringJoiner(", ", SensorReadingsItemType.class.getSimpleName() + "[", "]")
+                .add("sType='" + sType + "'")
+                .add("sId='" + sId + "'")
+                .add("sName='" + sName + "'")
+                .add("sData='" + sData + "'")
+                .add("sTimestamp=" + sTimestamp)
+                .toString();
     }
 }

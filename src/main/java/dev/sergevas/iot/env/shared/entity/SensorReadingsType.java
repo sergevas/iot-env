@@ -1,46 +1,55 @@
 package dev.sergevas.iot.env.shared.entity;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.json.bind.annotation.JsonbProperty;
+import jakarta.validation.Valid;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 /**
  * An array of sensors readings
- */
-@JsonInclude(JsonInclude.Include.NON_NULL)
-public class SensorReadingsType {
-    private List<SensorReadingsItemType> sReadings;
+ **/
 
+public class SensorReadingsType {
+    private @Valid List<SensorReadingsItemType> sReadings;
+
+    /**
+     * Sensor readings
+     **/
     public SensorReadingsType sReadings(List<SensorReadingsItemType> sReadings) {
         this.sReadings = sReadings;
         return this;
     }
 
+
+    @JsonbProperty("s_readings")
+    public List<SensorReadingsItemType> getsReadings() {
+        return sReadings;
+    }
+
+    @JsonbProperty("s_readings")
+    public void setsReadings(List<SensorReadingsItemType> sReadings) {
+        this.sReadings = sReadings;
+    }
+
     public SensorReadingsType addSReadingsItem(SensorReadingsItemType sReadingsItem) {
         if (this.sReadings == null) {
-            this.sReadings = new ArrayList<SensorReadingsItemType>();
+            this.sReadings = new ArrayList<>();
         }
+
         this.sReadings.add(sReadingsItem);
         return this;
     }
 
-    /**
-     * Sensor readings
-     *
-     * @return sReadings
-     **/
-    @JsonProperty("s_readings")
-    public List<SensorReadingsItemType> getSReadings() {
-        return sReadings;
-    }
+    public SensorReadingsType removeSReadingsItem(SensorReadingsItemType sReadingsItem) {
+        if (sReadingsItem != null && this.sReadings != null) {
+            this.sReadings.remove(sReadingsItem);
+        }
 
-    public void setSReadings(List<SensorReadingsItemType> sReadings) {
-        this.sReadings = sReadings;
+        return this;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -61,21 +70,8 @@ public class SensorReadingsType {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class SensorReadingsType {\n");
-        sb.append("    sReadings: ").append(toIndentedString(sReadings)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
+        return new StringJoiner(", ", SensorReadingsType.class.getSimpleName() + "[", "]")
+                .add("sReadings=" + sReadings)
+                .toString();
     }
 }

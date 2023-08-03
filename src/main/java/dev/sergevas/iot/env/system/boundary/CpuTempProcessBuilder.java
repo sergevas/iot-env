@@ -1,5 +1,8 @@
 package dev.sergevas.iot.env.system.boundary;
 
+import jakarta.inject.Singleton;
+
+@Singleton
 public class CpuTempProcessBuilder {
 
     public static final String[] FETCH_CPU_TEMP_CMD = new String[]{"cat", "/sys/class/thermal/thermal_zone0/temp"};

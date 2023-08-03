@@ -1,56 +1,71 @@
 package dev.sergevas.iot.env.bh1750.boundary;
 
-import com.pi4j.io.i2c.I2CDevice;
-import dev.sergevas.iot.env.hardware.adapter.I2CBusProvider;
+import dev.sergevas.iot.env.hardware.adapter.HardwareException;
 import dev.sergevas.iot.env.performance.control.Profiler;
 import dev.sergevas.iot.env.shared.entity.ErrorEventId;
 import dev.sergevas.iot.env.shared.entity.SensorName;
 import dev.sergevas.iot.env.shared.entity.SensorType;
 import dev.sergevas.iot.env.shared.exception.SensorException;
 import dev.sergevas.iot.env.transform.control.StringUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
+import io.quarkiverse.jef.java.embedded.framework.linux.core.NativeIOException;
+import io.quarkiverse.jef.java.embedded.framework.linux.i2c.I2CBus;
+import io.quarkiverse.jef.java.embedded.framework.linux.i2c.I2CInterface;
+import io.quarkiverse.jef.java.embedded.framework.linux.i2c.SMBus;
+import io.quarkiverse.jef.java.embedded.framework.runtime.i2c.I2C;
+import io.quarkus.logging.Log;
+import jakarta.annotation.PostConstruct;
+import jakarta.inject.Singleton;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import java.io.IOException;
+import java.nio.ByteBuffer;
 
-public class Bh1750Adapter implements InitializingBean {
-
-    private static final Logger LOG = LoggerFactory.getLogger(Bh1750Adapter.class);
+@Singleton
+public class Bh1750Adapter {
 
     public static final byte GY_302_BH1750_POWER_DOWN = 0x00;
     public static final byte GY_302_BH1750_POWER_ON = 0x01;
     public static final byte GY_302_BH1750_ONE_TIME_H_RESOLUTION_MODE = (byte) 0x20;
     public static final int GY_302_BH1750_READINGS_DATA_LENGTH = 2;
 
-    private final I2CBusProvider i2CBusProvider;
-    private final Integer bh1750ModuleAddress;
-    private I2CDevice bh1750I2CDevice;
+    @I2C(name = "i2c0")
+    I2CBus i2C0Bus;
+    @ConfigProperty(name = "bh1750.moduleAddress")
+    int bh1750ModuleAddress;
+    private SMBus smBus;
 
-    public Bh1750Adapter(I2CBusProvider i2CBusProvider, Integer bh1750ModuleAddress) {
-        super();
-        this.i2CBusProvider = i2CBusProvider;
-        this.bh1750ModuleAddress = bh1750ModuleAddress;
+    public Bh1750Adapter() {
+    }
+
+    @PostConstruct
+    public void initSMBus() {
+        try {
+            smBus = i2C0Bus.select(bh1750ModuleAddress).getSmBus();
+        } catch (NativeIOException e) {
+            Log.error(e);
+            throw new HardwareException(e);
+        }
     }
 
     public double getLightIntensity() {
         double lightIntensity;
         try {
             Profiler.init("Bh1750Adapter.getLightIntensity()");
-            bh1750I2CDevice.write(GY_302_BH1750_POWER_ON);
-            bh1750I2CDevice.write(GY_302_BH1750_ONE_TIME_H_RESOLUTION_MODE);
+            smBus.writeByte(GY_302_BH1750_POWER_ON);
+            smBus.writeByte(GY_302_BH1750_ONE_TIME_H_RESOLUTION_MODE);
             Thread.sleep(180); // H-Resolution Mode max measurement time
-            LOG.debug("Reading data from GY-302 BH1750...");
+            Log.debug("Reading data from GY-302 BH1750...");
             byte[] readings = new byte[GY_302_BH1750_READINGS_DATA_LENGTH];
-            bh1750I2CDevice.read(readings, 0, GY_302_BH1750_READINGS_DATA_LENGTH);
-            LOG.debug("GY-302 BH1750 readings: {}", StringUtil.toHexString(readings));
-            bh1750I2CDevice.write(GY_302_BH1750_POWER_DOWN);
+            I2CInterface i2CInterface = smBus.getInterface();
+            i2CInterface.read(ByteBuffer.wrap(readings), GY_302_BH1750_READINGS_DATA_LENGTH);
+            Log.debugf("GY-302 BH1750 readings: {}", StringUtil.toHexString(readings));
+            smBus.writeByte(GY_302_BH1750_POWER_DOWN);
             lightIntensity = fromRawReadingsToLightIntensity(readings);
         } catch (Exception e) {
-            LOG.error("Unable to get light intensity", e);
-            throw new SensorException(ErrorEventId.E_BH1750_0001.getId(), SensorType.LIGHT, SensorName.BH1750, ErrorEventId.E_BH1750_0001.getName(), e);
+            Log.error("Unable to get light intensity", e);
+            throw new SensorException(ErrorEventId.E_BH1750_0001.getId(), SensorType.LIGHT, SensorName.BH1750,
+                    ErrorEventId.E_BH1750_0001.getName(), e);
         }
-        LOG.debug(Profiler.getCurrentMsg("Bh1750Adapter.getLightIntensity()",
+        Log.debug(Profiler.getCurrentMsg("Bh1750Adapter.getLightIntensity()",
                 "getLightIntensityComplete"));
         return lightIntensity;
     }
@@ -59,16 +74,9 @@ public class Bh1750Adapter implements InitializingBean {
         Profiler.init("Bh1750Adapter.fromRawReadingsToLightIntensity()");
         double lightIntensity = Math.round((Byte.toUnsignedInt(i2cReadings[0]) << 8
                 | Byte.toUnsignedInt(i2cReadings[1])) / 1.2 * 100.0) / 100.0;
-        LOG.debug("Light intensity: {} lux", lightIntensity);
-        LOG.debug(Profiler.getCurrentMsg("Bh1750Adapter.fromRawReadingsToLightIntensity()",
+        Log.debugf("Light intensity: %d lux", lightIntensity);
+        Log.debug(Profiler.getCurrentMsg("Bh1750Adapter.fromRawReadingsToLightIntensity()",
                 "fromRawReadingsToLightIntensityComplete"));
         return lightIntensity;
-    }
-
-    @Override
-    public void afterPropertiesSet() throws IOException {
-        LOG.info("Create I2C device for {} start...", Bh1750Adapter.class);
-        bh1750I2CDevice = i2CBusProvider.getI2CBus().getDevice(bh1750ModuleAddress);
-        LOG.info("Create I2C device for {} complete...", Bh1750Adapter.class);
     }
 }

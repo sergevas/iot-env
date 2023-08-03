@@ -1,134 +1,138 @@
 package dev.sergevas.iot.env.shared.entity;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.json.bind.annotation.JsonbProperty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 /**
  * This type contains a sensor readings request error description elements of the API
- */
-@JsonInclude(JsonInclude.Include.NON_NULL)
+ **/
+
 public class SensorErrorType {
+    private @Valid String eventId;
+    private @Valid String eventName;
+    private @Valid String sName;
+    private @Valid String sType;
+    private @Valid String desc;
+    private @Valid OffsetDateTime eventTimestamp;
 
-    private String eventId;
-    private String eventName;
-    private String sType;
-    private String sName;
-    private String desc;
-    private OffsetDateTime eventTimestamp;
-
+    /**
+     * An error event type id
+     **/
     public SensorErrorType eventId(String eventId) {
         this.eventId = eventId;
         return this;
     }
 
-    /**
-     * An error event type id
-     *
-     * @return eventId
-     **/
-    @JsonProperty("event_id")
+
+    @JsonbProperty("event_id")
+    @NotNull
     public String getEventId() {
         return eventId;
     }
 
+    @JsonbProperty("event_id")
     public void setEventId(String eventId) {
         this.eventId = eventId;
     }
 
+    /**
+     * An error event descriptive name
+     **/
     public SensorErrorType eventName(String eventName) {
         this.eventName = eventName;
         return this;
     }
 
-    /**
-     * An error event descriptive name
-     *
-     * @return eventName
-     **/
-    @JsonProperty("event_name")
+
+    @JsonbProperty("event_name")
+    @NotNull
     public String getEventName() {
         return eventName;
     }
 
+    @JsonbProperty("event_name")
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
 
-    public SensorErrorType sType(String sType) {
-        this.sType = sType;
-        return this;
-    }
-
     /**
-     * A sensor type, e.g. TEMP (temperature)
-     *
-     * @return sType
+     * A sensor type, e.g. BH1750
      **/
-    @JsonProperty("s_type")
-    public String getSType() {
-        return sType;
-    }
-
-    public void setSType(String sType) {
-        this.sType = sType;
-    }
-
     public SensorErrorType sName(String sName) {
         this.sName = sName;
         return this;
     }
 
-    /**
-     * A sensor name, e.g. BH1750
-     *
-     * @return sName
-     **/
-    @JsonProperty("s_name")
-    public String getSName() {
+
+    @JsonbProperty("s_name")
+    public String getsName() {
         return sName;
     }
 
-    public void setSName(String sName) {
+    @JsonbProperty("s_name")
+    public void setsName(String sName) {
         this.sName = sName;
     }
 
+    /**
+     * A sensor name, e.g. TEMP (temperature)
+     **/
+    public SensorErrorType sType(String sType) {
+        this.sType = sType;
+        return this;
+    }
+
+
+    @JsonbProperty("s_type")
+    public String getsType() {
+        return sType;
+    }
+
+    @JsonbProperty("s_type")
+    public void setsType(String sType) {
+        this.sType = sType;
+    }
+
+    /**
+     * An error event detailed info
+     **/
     public SensorErrorType desc(String desc) {
         this.desc = desc;
         return this;
     }
 
-    /**
-     * An error event detailed info
-     *
-     * @return desc
-     **/
-    @JsonProperty("desc")
+
+    @JsonbProperty("desc")
     public String getDesc() {
         return desc;
     }
 
+    @JsonbProperty("desc")
     public void setDesc(String desc) {
         this.desc = desc;
     }
 
+    /**
+     * An error event occurrence timestamp
+     **/
     public SensorErrorType eventTimestamp(OffsetDateTime eventTimestamp) {
         this.eventTimestamp = eventTimestamp;
         return this;
     }
 
-    /**
-     * An error event occurrence timestamp
-     *
-     * @return eventTimestamp
-     **/
-    @JsonProperty("event_timestamp")
+
+    @JsonbProperty("event_timestamp")
+    @NotNull
     public OffsetDateTime getEventTimestamp() {
         return eventTimestamp;
     }
 
+    @JsonbProperty("event_timestamp")
     public void setEventTimestamp(OffsetDateTime eventTimestamp) {
         this.eventTimestamp = eventTimestamp;
     }
@@ -145,40 +149,26 @@ public class SensorErrorType {
         SensorErrorType sensorErrorType = (SensorErrorType) o;
         return Objects.equals(this.eventId, sensorErrorType.eventId) &&
                 Objects.equals(this.eventName, sensorErrorType.eventName) &&
-                Objects.equals(this.sType, sensorErrorType.sType) &&
                 Objects.equals(this.sName, sensorErrorType.sName) &&
+                Objects.equals(this.sType, sensorErrorType.sType) &&
                 Objects.equals(this.desc, sensorErrorType.desc) &&
                 Objects.equals(this.eventTimestamp, sensorErrorType.eventTimestamp);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(eventId, eventName, sType, sName, desc, eventTimestamp);
+        return Objects.hash(eventId, eventName, sName, sType, desc, eventTimestamp);
     }
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("class SensorErrorType {\n");
-
-        sb.append("    eventId: ").append(toIndentedString(eventId)).append("\n");
-        sb.append("    eventName: ").append(toIndentedString(eventName)).append("\n");
-        sb.append("    sType: ").append(toIndentedString(sType)).append("\n");
-        sb.append("    sName: ").append(toIndentedString(sName)).append("\n");
-        sb.append("    desc: ").append(toIndentedString(desc)).append("\n");
-        sb.append("    eventTimestamp: ").append(toIndentedString(eventTimestamp)).append("\n");
-        sb.append("}");
-        return sb.toString();
-    }
-
-    /**
-     * Convert the given object to string with each line indented by 4 spaces
-     * (except the first line).
-     */
-    private String toIndentedString(Object o) {
-        if (o == null) {
-            return "null";
-        }
-        return o.toString().replace("\n", "\n    ");
+        return new StringJoiner(", ", SensorErrorType.class.getSimpleName() + "[", "]")
+                .add("eventId='" + eventId + "'")
+                .add("eventName='" + eventName + "'")
+                .add("sName='" + sName + "'")
+                .add("sType='" + sType + "'")
+                .add("desc='" + desc + "'")
+                .add("eventTimestamp=" + eventTimestamp)
+                .toString();
     }
 }

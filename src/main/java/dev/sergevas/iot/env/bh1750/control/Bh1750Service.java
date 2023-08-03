@@ -4,15 +4,14 @@ import dev.sergevas.iot.env.bh1750.boundary.Bh1750Adapter;
 import dev.sergevas.iot.env.shared.entity.SensorName;
 import dev.sergevas.iot.env.shared.entity.SensorReadingsItemType;
 import dev.sergevas.iot.env.shared.entity.SensorType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import io.quarkus.logging.Log;
+import jakarta.inject.Singleton;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
+@Singleton
 public class Bh1750Service {
-    private static final Logger LOG = LoggerFactory.getLogger(Bh1750Service.class);
-
     private final Bh1750Adapter bh1750Adapter;
 
     public Bh1750Service(Bh1750Adapter bh1750Adapter) {
@@ -26,7 +25,7 @@ public class Bh1750Service {
                 .sName(SensorName.BH1750.getName())
                 .sTimestamp(OffsetDateTime.now(ZoneOffset.UTC))
                 .sData(String.valueOf(lightIntensity));
-        LOG.debug("{}.getSensorReadingsItemTypeForBh1750() {}", Bh1750Service.class, sensorReadings);
+        Log.debugf("%s.getSensorReadingsItemTypeForBh1750() %s", Bh1750Service.class, sensorReadings);
         return sensorReadings;
     }
 }
