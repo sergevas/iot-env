@@ -2,11 +2,11 @@ package dev.sergevas.iot.env.bh1750.boundary;
 
 import dev.sergevas.iot.env.hardware.adapter.HardwareException;
 import dev.sergevas.iot.env.performance.control.Profiler;
+import dev.sergevas.iot.env.shared.control.StringUtil;
 import dev.sergevas.iot.env.shared.entity.ErrorEventId;
 import dev.sergevas.iot.env.shared.entity.SensorName;
 import dev.sergevas.iot.env.shared.entity.SensorType;
 import dev.sergevas.iot.env.shared.exception.SensorException;
-import dev.sergevas.iot.env.transform.control.StringUtil;
 import io.quarkiverse.jef.java.embedded.framework.linux.core.NativeIOException;
 import io.quarkiverse.jef.java.embedded.framework.linux.i2c.I2CBus;
 import io.quarkiverse.jef.java.embedded.framework.linux.i2c.I2CInterface;
@@ -57,7 +57,7 @@ public class Bh1750Adapter {
             byte[] readings = new byte[GY_302_BH1750_READINGS_DATA_LENGTH];
             I2CInterface i2CInterface = smBus.getInterface();
             i2CInterface.read(ByteBuffer.wrap(readings), GY_302_BH1750_READINGS_DATA_LENGTH);
-            Log.debugf("GY-302 BH1750 readings: {}", StringUtil.toHexString(readings));
+            Log.infof("GY-302 BH1750 readings: %s", StringUtil.toHexString(readings));
             smBus.writeByte(GY_302_BH1750_POWER_DOWN);
             lightIntensity = fromRawReadingsToLightIntensity(readings);
         } catch (Exception e) {

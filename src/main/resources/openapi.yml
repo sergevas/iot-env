@@ -7,7 +7,7 @@ info:
       - GET temperature, humidity, pressure, ambient light intensity readings
       - GET Health checks
 servers:
-  - url: 'http://192.168.1.87:8080/iotenv/api/v1'
+  - url: 'http://192.168.1.77:8080/iotenv/api/v1'
     description: The field device endpoint
 paths:
   /sensors/bh1750:
