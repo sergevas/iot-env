@@ -10,7 +10,7 @@ import jakarta.inject.Singleton;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import static dev.sergevas.iot.env.shared.entity.ErrorEventId.E_SYSTEM_0001;
+import static dev.sergevas.iot.env.shared.entity.ErrorEvent.E_SYSTEM_0001;
 
 @Singleton
 public class SystemInfoAdapter {

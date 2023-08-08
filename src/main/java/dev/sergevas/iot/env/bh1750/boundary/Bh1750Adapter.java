@@ -3,7 +3,7 @@ package dev.sergevas.iot.env.bh1750.boundary;
 import dev.sergevas.iot.env.hardware.adapter.HardwareException;
 import dev.sergevas.iot.env.performance.control.Profiler;
 import dev.sergevas.iot.env.shared.control.StringUtil;
-import dev.sergevas.iot.env.shared.entity.ErrorEventId;
+import dev.sergevas.iot.env.shared.entity.ErrorEvent;
 import dev.sergevas.iot.env.shared.entity.SensorName;
 import dev.sergevas.iot.env.shared.entity.SensorType;
 import dev.sergevas.iot.env.shared.exception.SensorException;
@@ -62,8 +62,8 @@ public class Bh1750Adapter {
             lightIntensity = fromRawReadingsToLightIntensity(readings);
         } catch (Exception e) {
             Log.error("Unable to get light intensity", e);
-            throw new SensorException(ErrorEventId.E_BH1750_0001.getId(), SensorType.LIGHT, SensorName.BH1750,
-                    ErrorEventId.E_BH1750_0001.getName(), e);
+            throw new SensorException(ErrorEvent.E_BH1750_0001.getId(), SensorType.LIGHT, SensorName.BH1750,
+                    ErrorEvent.E_BH1750_0001.getName(), e);
         }
         Log.debug(Profiler.getCurrentMsg("Bh1750Adapter.getLightIntensity()",
                 "getLightIntensityComplete"));
