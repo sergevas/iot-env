@@ -1,9 +1,5 @@
 package dev.sergevas.iot.env.shared.entity;
 
-import jakarta.json.bind.annotation.JsonbProperty;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -13,11 +9,11 @@ import java.util.StringJoiner;
  **/
 
 public class SensorReadingsItemType {
-    private @Valid String sType;
-    private @Valid String sId;
-    private @Valid String sName;
-    private @Valid String sData;
-    private @Valid OffsetDateTime sTimestamp;
+    private String sType;
+    private String sId;
+    private String sName;
+    private String sData;
+    private OffsetDateTime sTimestamp;
 
     /**
      * A sensor type, e.g. TEMP (temperature)
@@ -28,12 +24,12 @@ public class SensorReadingsItemType {
     }
 
 
-    @JsonbProperty("s_type")
+    //    @JsonbProperty("s_type")
     public String getsType() {
         return sType;
     }
 
-    @JsonbProperty("s_type")
+    //    @JsonbProperty("s_type")
     public void setsType(String sType) {
         this.sType = sType;
     }
@@ -47,12 +43,12 @@ public class SensorReadingsItemType {
     }
 
 
-    @JsonbProperty("s_id")
+    //    @JsonbProperty("s_id")
     public String getsId() {
         return sId;
     }
 
-    @JsonbProperty("s_id")
+    //    @JsonbProperty("s_id")
     public void setsId(String sId) {
         this.sId = sId;
     }
@@ -66,12 +62,12 @@ public class SensorReadingsItemType {
     }
 
 
-    @JsonbProperty("s_name")
+    //    @JsonbProperty("s_name")
     public String getsName() {
         return sName;
     }
 
-    @JsonbProperty("s_name")
+    //    @JsonbProperty("s_name")
     public void setsName(String sName) {
         this.sName = sName;
     }
@@ -85,13 +81,13 @@ public class SensorReadingsItemType {
     }
 
 
-    @JsonbProperty("s_data")
-    @NotNull
+    //    @JsonbProperty("s_data")
+//    @NotNull
     public String getsData() {
         return sData;
     }
 
-    @JsonbProperty("s_data")
+    //    @JsonbProperty("s_data")
     public void setsData(String sData) {
         this.sData = sData;
     }
@@ -105,13 +101,13 @@ public class SensorReadingsItemType {
     }
 
 
-    @JsonbProperty("s_timestamp")
-    @NotNull
+    //    @JsonbProperty("s_timestamp")
+//    @NotNull
     public OffsetDateTime getsTimestamp() {
         return sTimestamp;
     }
 
-    @JsonbProperty("s_timestamp")
+    //    @JsonbProperty("s_timestamp")
     public void setsTimestamp(OffsetDateTime sTimestamp) {
         this.sTimestamp = sTimestamp;
     }
