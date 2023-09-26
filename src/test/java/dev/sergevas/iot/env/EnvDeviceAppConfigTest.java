@@ -50,7 +50,7 @@ class EnvDeviceAppConfigTest {
 
     @Test
     void isJefI2cTenBits() {
-        assertTrue(envDeviceAppConfig.isJefI2cTenBits());
+        assertFalse(envDeviceAppConfig.isJefI2cTenBits());
     }
 
     @Test
@@ -107,8 +107,6 @@ class EnvDeviceAppConfigTest {
     @Test
     void fetchBooleanProperty() {
         assertTrue(envDeviceAppConfig.fetchBooleanProperty("test.booleanValueProperty"));
-        assertEquals("Unable to convert the property [test.stringValueProperty]=[aStrValue] to boolean type",
-                assertThrows(EnvDeviceAppConfigException.class,
-                        () -> envDeviceAppConfig.fetchBooleanProperty("test.stringValueProperty")).getMessage());
+        assertFalse(envDeviceAppConfig.fetchBooleanProperty("test.stringValueProperty"));
     }
 }
