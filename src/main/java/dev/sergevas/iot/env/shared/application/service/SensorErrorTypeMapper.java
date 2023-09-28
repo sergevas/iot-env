@@ -1,8 +1,7 @@
-package dev.sergevas.iot.env.shared.boundary;
+package dev.sergevas.iot.env.shared.application.service;
 
-import dev.sergevas.iot.env.shared.entity.SensorErrorType;
-import dev.sergevas.iot.env.shared.exception.ExceptionUtils;
-import dev.sergevas.iot.env.shared.exception.SensorException;
+import dev.sergevas.iot.env.shared.application.port.out.SensorException;
+import dev.sergevas.iot.env.shared.domain.SensorErrorType;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;

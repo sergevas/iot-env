@@ -1,7 +1,7 @@
 package dev.sergevas.iot.env.shared.boundary;
 
-import dev.sergevas.iot.env.shared.entity.SensorReadingsItemType;
-import dev.sergevas.iot.env.shared.entity.SensorReadingsType;
+import dev.sergevas.iot.env.shared.domain.SensorReadingsItemType;
+import dev.sergevas.iot.env.shared.domain.SensorReadingsType;
 
 
 //@Path("/sensors")

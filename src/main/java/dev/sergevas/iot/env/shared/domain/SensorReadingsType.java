@@ -1,4 +1,4 @@
-package dev.sergevas.iot.env.shared.entity;
+package dev.sergevas.iot.env.shared.domain;
 
 import java.util.ArrayList;
 import java.util.List;

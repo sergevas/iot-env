@@ -1,4 +1,4 @@
-package dev.sergevas.iot.env.shared.exception;
+package dev.sergevas.iot.env.shared.application.service;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

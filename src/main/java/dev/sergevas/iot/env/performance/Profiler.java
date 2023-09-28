@@ -1,4 +1,4 @@
-package dev.sergevas.iot.env.performance.control;
+package dev.sergevas.iot.env.performance;
 
 import java.util.HashMap;
 import java.util.Map;

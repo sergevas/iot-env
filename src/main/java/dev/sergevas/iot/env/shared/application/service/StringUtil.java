@@ -1,4 +1,4 @@
-package dev.sergevas.iot.env.shared.control;
+package dev.sergevas.iot.env.shared.application.service;
 
 public class StringUtil {
 

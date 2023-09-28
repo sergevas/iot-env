@@ -2,9 +2,9 @@ package dev.sergevas.iot.env.bh1750.adapter.in.http;
 
 import dev.sergevas.iot.env.EnvDeviceAppServiceManager;
 import dev.sergevas.iot.env.bh1750.application.port.in.Bh1750UseCase;
-import dev.sergevas.iot.env.shared.entity.SensorName;
-import dev.sergevas.iot.env.shared.entity.SensorReadingsItemType;
-import dev.sergevas.iot.env.shared.entity.SensorType;
+import dev.sergevas.iot.env.shared.domain.SensorName;
+import dev.sergevas.iot.env.shared.domain.SensorReadingsItemType;
+import dev.sergevas.iot.env.shared.domain.SensorType;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.Headers;
