@@ -2,7 +2,7 @@ package dev.sergevas.iot.env.bh1750.adapter.out.i2c;
 
 import dev.sergevas.iot.env.EnvDeviceAppConfig;
 import dev.sergevas.iot.env.bh1750.application.port.out.LightIntensity;
-import dev.sergevas.iot.env.hardware.adapter.HardwareException;
+import dev.sergevas.iot.env.hardware.port.out.HardwareException;
 import dev.sergevas.iot.env.performance.Profiler;
 import dev.sergevas.iot.env.shared.application.port.out.SensorException;
 import dev.sergevas.iot.env.shared.application.service.StringUtil;
