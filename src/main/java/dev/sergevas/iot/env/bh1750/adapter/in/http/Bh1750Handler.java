@@ -17,7 +17,7 @@ public class Bh1750Handler implements HttpHandler {
     private final Bh1750UseCase bh1750UseCase = EnvDeviceAppServiceManager.getInstance().getBh1750UseCase();
 
     @Override
-    public void handleRequest(HttpServerExchange exchange) throws Exception {
+    public void handleRequest(HttpServerExchange exchange) {
         SensorReadingsItemType sensorReadingsType = new SensorReadingsItemType()
                 .sType(SensorType.LIGHT.name())
                 .sName(SensorName.BH1750.getName())

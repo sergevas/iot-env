@@ -22,6 +22,10 @@ public class EnvDeviceAppConfig {
         return fetchIntProperty("http.port");
     }
 
+    public String getHttpApiBasePath() {
+        return this.applicationProperties.getProperty("http.api.basePath");
+    }
+
     public boolean isJefI2cEnabled() {
         return fetchBooleanProperty("jef.i2c.enabled");
     }

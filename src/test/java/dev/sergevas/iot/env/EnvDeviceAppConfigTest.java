@@ -39,6 +39,11 @@ class EnvDeviceAppConfigTest {
     }
 
     @Test
+    void getHttpApiBasePath() {
+        assertEquals("/iotenv/api/v1", envDeviceAppConfig.getHttpApiBasePath());
+    }
+
+    @Test
     void isJefI2cEnabled() {
         assertTrue(envDeviceAppConfig.isJefI2cEnabled());
     }

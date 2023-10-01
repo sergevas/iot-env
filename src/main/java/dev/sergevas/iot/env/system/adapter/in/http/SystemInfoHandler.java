@@ -18,7 +18,8 @@ public class SystemInfoHandler implements HttpHandler {
     private final SystemInfoUseCase systemInfoUseCase = EnvDeviceAppServiceManager.getInstance().getSystemInfoUseCase();
 
     @Override
-    public void handleRequest(HttpServerExchange exchange) throws Exception {
+    public void handleRequest(HttpServerExchange exchange) {
+        System.out.printf("Relative path: %s", exchange.getRelativePath()); // TODO: remove this
         SystemInfo systemInfo = systemInfoUseCase.getSystemInfo();
         SensorReadingsType sensorReadingsType = new SensorReadingsType()
                 .addSReadingsItem(new SensorReadingsItemType()
