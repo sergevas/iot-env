@@ -37,6 +37,7 @@ public class EnvDeviceAppServiceManager {
     }
 
     public static EnvDeviceAppServiceManager init() {
+//        EnvDeviceAppLoggingConfig.init();
         EnvDeviceAppServiceManager mgr = new EnvDeviceAppServiceManager();
         mgr.envDeviceAppConfig = initEnvDeviceAppConfig();
         mgr.systemInfoUseCase = initSystemInfoUseCase(initCpuTemp());

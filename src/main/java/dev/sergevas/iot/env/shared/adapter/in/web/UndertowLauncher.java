@@ -9,8 +9,7 @@ import io.undertow.UndertowOptions;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.handlers.accesslog.AccessLogHandler;
 import io.undertow.server.handlers.accesslog.JBossLoggingAccessLogReceiver;
-
-import java.time.LocalDateTime;
+import org.jboss.logging.Logger;
 
 import static io.undertow.Handlers.path;
 
@@ -18,7 +17,9 @@ import static io.undertow.Handlers.path;
 
 public class UndertowLauncher {
 
-    public static Undertow startServer() {
+    private static final Logger LOG = Logger.getLogger(UndertowLauncher.class);
+
+    public static void startServer() {
         EnvDeviceAppConfig config = EnvDeviceAppServiceManager.getInstance().getEnvDeviceAppConfig();
 
         final String httpApiSensorsBasePath = config.getHttpApiBasePath() + "/sensors";
@@ -34,9 +35,8 @@ public class UndertowLauncher {
                 .addHttpListener(config.getHttpPort(), "0.0.0.0")
                 .setHandler(accessLogHandler)
                 .build();
-        System.out.println(LocalDateTime.now() + " Start server...");
+        LOG.info("Start server...");
         server.start();
-        System.out.println(LocalDateTime.now() + " Start server complete...");
-        return server;
+        LOG.info("Start server complete...");
     }
 }
