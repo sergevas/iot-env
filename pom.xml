@@ -6,18 +6,16 @@
     <groupId>dev.sergevas.iot</groupId>
     <artifactId>iot-env</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
     <name>${project.artifactId}</name>
 
     <properties>
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <piranha.distribution>servlet</piranha.distribution>
-        <piranha.version>23.10.0</piranha.version>
+        <undertow.version>2.3.9.Final</undertow.version>
         <jef.version>3.0.2</jef.version>
         <mockito.version>5.3.1</mockito.version>
-        <surefire-plugin.version>3.1.2</surefire-plugin.version>
+        <surefire-plugin.version>3.0.0</surefire-plugin.version>
         <sbc.ip>192.168.1.87</sbc.ip>
         <app.root.dir>/home/root/iot-env/app</app.root.dir>
         <!--<quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
@@ -27,6 +25,22 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+            <version>10.0.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-core</artifactId>
+            <version>${undertow.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.undertow</groupId>
+            <artifactId>undertow-servlet</artifactId>
+            <version>${undertow.version}</version>
+        </dependency>
         <dependency>
             <groupId>io.quarkiverse.jef</groupId>
             <artifactId>linux-core</artifactId>
@@ -41,12 +55,6 @@
             <groupId>io.quarkiverse.jef</groupId>
             <artifactId>mcu-core</artifactId>
             <version>${jef.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.platform</groupId>
-            <artifactId>jakarta.jakartaee-api</artifactId>
-            <version>10.0.0</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -86,36 +94,39 @@
         <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
-                <groupId>cloud.piranha.maven.plugins</groupId>
-                <artifactId>piranha-maven-plugin</artifactId>
-                <version>${piranha.version}</version>
-                <executions>
-                    <execution>
-                        <id>pre-integration-test</id>
-                        <phase>pre-integration-test</phase>
-                        <goals>
-                            <goal>start</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>post-integration-test</id>
-                        <phase>post-integration-test</phase>
-                        <goals>
-                            <goal>stop</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <distribution>${piranha.distribution}</distribution>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
                     <release>${maven.compiler.release}</release>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <!-- get all project dependencies -->
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <!-- MainClass in mainfest make a executable jar -->
+                    <archive>
+                        <manifest>
+                            <mainClass>dev.sergevas.iot.env.EnvDeviceApp</mainClass>
+                        </manifest>
+                    </archive>
+
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <!-- bind to the packaging phase -->
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -133,54 +144,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.4.0</version>
-                <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
-                </configuration>
-            </plugin>
-
-            <!--<plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>wagon-maven-plugin</artifactId>
-                <version>2.0.2</version>
-                <executions>
-                    &lt;!&ndash;          <execution>&ndash;&gt;
-                    &lt;!&ndash;            <id>uploadNativeLibs</id>&ndash;&gt;
-                    &lt;!&ndash;            <phase>install</phase>&ndash;&gt;
-                    &lt;!&ndash;            <goals>&ndash;&gt;
-                    &lt;!&ndash;              <goal>upload</goal>&ndash;&gt;
-                    &lt;!&ndash;            </goals>&ndash;&gt;
-                    &lt;!&ndash;            <configuration>&ndash;&gt;
-                    &lt;!&ndash;              <serverId>rpiAdev</serverId>&ndash;&gt;
-                    &lt;!&ndash;              <fromDir>${project.basedir}/src/main/resources</fromDir>&ndash;&gt;
-                    &lt;!&ndash;              <includes>native/*</includes>&ndash;&gt;
-                    &lt;!&ndash;              <url>scp://${rpi.ip}${app.root.dir}</url>&ndash;&gt;
-                    &lt;!&ndash;            </configuration>&ndash;&gt;
-                    &lt;!&ndash;          </execution>&ndash;&gt;
-                    <execution>
-                        <id>uploadApp</id>
-                        <phase>install</phase>
-                        <goals>
-                            <goal>upload</goal>
-                            <goal>sshexec</goal>
-                        </goals>
-                        <configuration>
-                            <serverId>rpiAdev</serverId>
-                            <fromDir>${project.build.directory}</fromDir>
-                            <includes>libs/*,${project.build.finalName}.${project.packaging}</includes>
-                            <url>scp://${sbc.ip}${app.root.dir}/helidon</url>
-                            <commands>
-                                <command>systemctl restart growlabv1.service</command>
-                            </commands>
-                            <displayCommandOutputs>true</displayCommandOutputs>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-              -->
         </plugins>
         <extensions>
             <extension>

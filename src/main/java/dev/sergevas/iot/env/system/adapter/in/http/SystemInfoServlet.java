@@ -7,7 +7,6 @@ import dev.sergevas.iot.env.shared.domain.SensorReadingsType;
 import dev.sergevas.iot.env.shared.domain.SensorType;
 import dev.sergevas.iot.env.system.application.port.in.SystemInfoUseCase;
 import dev.sergevas.iot.env.system.domain.SystemInfo;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,7 +16,7 @@ import java.io.PrintWriter;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-@WebServlet(name = "SystemInfoServlet", urlPatterns = {"/sensors/system"})
+//@WebServlet(name = "SystemInfoServlet", urlPatterns = {"/sensors/system"})
 public class SystemInfoServlet extends HttpServlet {
 
     private SystemInfoUseCase systemInfoUseCase;

@@ -5,7 +5,6 @@ import dev.sergevas.iot.env.bh1750.application.port.in.Bh1750UseCase;
 import dev.sergevas.iot.env.shared.domain.SensorName;
 import dev.sergevas.iot.env.shared.domain.SensorReadingsItemType;
 import dev.sergevas.iot.env.shared.domain.SensorType;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,7 +14,7 @@ import java.io.PrintWriter;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-@WebServlet(name = "Bh1750Servlet", urlPatterns = {"/sensors/bh1750"})
+//@WebServlet(name = "Bh1750Servlet", urlPatterns = {"/sensors/bh1750"})
 public class Bh1750Servlet extends HttpServlet {
 
     private Bh1750UseCase bh1750UseCase;
