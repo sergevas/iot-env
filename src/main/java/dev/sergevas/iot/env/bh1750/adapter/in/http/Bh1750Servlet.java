@@ -5,26 +5,37 @@ import dev.sergevas.iot.env.bh1750.application.port.in.Bh1750UseCase;
 import dev.sergevas.iot.env.shared.domain.SensorName;
 import dev.sergevas.iot.env.shared.domain.SensorReadingsItemType;
 import dev.sergevas.iot.env.shared.domain.SensorType;
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
-import io.undertow.util.Headers;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-public class Bh1750Handler implements HttpHandler {
+@WebServlet(name = "Bh1750Servlet", urlPatterns = {"/sensors/bh1750"})
+public class Bh1750Servlet extends HttpServlet {
 
-    private final Bh1750UseCase bh1750UseCase = EnvDeviceAppServiceManager.getInstance().getBh1750UseCase();
+    private Bh1750UseCase bh1750UseCase;
 
     @Override
-    public void handleRequest(HttpServerExchange exchange) {
+    public void init() {
+        bh1750UseCase = EnvDeviceAppServiceManager.getInstance().getBh1750UseCase();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         SensorReadingsItemType sensorReadingsType = new SensorReadingsItemType()
                 .sType(SensorType.LIGHT.name())
                 .sName(SensorName.BH1750.getName())
                 .sTimestamp(OffsetDateTime.now(ZoneOffset.UTC))
                 .sData(String.valueOf(bh1750UseCase.getSensorReadingsItemTypeForBh1750().getLightIntensity()));
         System.out.printf("SensorReadingsType with Bh1750 data: %s", sensorReadingsType);
-        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-        exchange.getResponseSender().send(sensorReadingsType + "\n");
+        try (PrintWriter writer = response.getWriter()) {
+            writer.println(sensorReadingsType.toString());
+            writer.flush();
+        }
     }
 }

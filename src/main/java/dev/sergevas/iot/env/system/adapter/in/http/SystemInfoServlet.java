@@ -7,19 +7,28 @@ import dev.sergevas.iot.env.shared.domain.SensorReadingsType;
 import dev.sergevas.iot.env.shared.domain.SensorType;
 import dev.sergevas.iot.env.system.application.port.in.SystemInfoUseCase;
 import dev.sergevas.iot.env.system.domain.SystemInfo;
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
-import io.undertow.util.Headers;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-public class SystemInfoHandler implements HttpHandler {
-    private final SystemInfoUseCase systemInfoUseCase = EnvDeviceAppServiceManager.getInstance().getSystemInfoUseCase();
+@WebServlet(name = "SystemInfoServlet", urlPatterns = {"/sensors/system"})
+public class SystemInfoServlet extends HttpServlet {
+
+    private SystemInfoUseCase systemInfoUseCase;
 
     @Override
-    public void handleRequest(HttpServerExchange exchange) {
-        System.out.printf("Relative path: %s", exchange.getRelativePath()); // TODO: remove this
+    public void init() {
+        systemInfoUseCase = EnvDeviceAppServiceManager.getInstance().getSystemInfoUseCase();
+    }
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, IOException {
         SystemInfo systemInfo = systemInfoUseCase.getSystemInfo();
         SensorReadingsType sensorReadingsType = new SensorReadingsType()
                 .addSReadingsItem(new SensorReadingsItemType()
@@ -28,7 +37,9 @@ public class SystemInfoHandler implements HttpHandler {
                         .sTimestamp(OffsetDateTime.now(ZoneOffset.UTC))
                         .sData(String.valueOf(systemInfo.getCpuTemp())));
         System.out.printf("SensorReadingsType with SystemInfo data: %s", sensorReadingsType);
-        exchange.getResponseHeaders().put(Headers.CONTENT_TYPE, "text/plain");
-        exchange.getResponseSender().send(sensorReadingsType + "\n");
+        try (PrintWriter writer = response.getWriter()) {
+            writer.println(sensorReadingsType.toString());
+            writer.flush();
+        }
     }
 }
