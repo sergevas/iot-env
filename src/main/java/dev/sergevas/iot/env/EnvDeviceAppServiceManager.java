@@ -38,6 +38,7 @@ public class EnvDeviceAppServiceManager {
 
     public static EnvDeviceAppServiceManager init() {
 //        EnvDeviceAppLoggingConfig.init();
+        System.setProperty("java.util.logging.manager", "org.jboss.logmanager.LogManager");
         EnvDeviceAppServiceManager mgr = new EnvDeviceAppServiceManager();
         mgr.envDeviceAppConfig = initEnvDeviceAppConfig();
         mgr.systemInfoUseCase = initSystemInfoUseCase(initCpuTemp());
