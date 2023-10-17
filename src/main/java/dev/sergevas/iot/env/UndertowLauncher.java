@@ -1,7 +1,5 @@
-package dev.sergevas.iot.env.shared.adapter.in.web;
+package dev.sergevas.iot.env;
 
-import dev.sergevas.iot.env.EnvDeviceAppConfig;
-import dev.sergevas.iot.env.EnvDeviceAppServiceManager;
 import dev.sergevas.iot.env.bh1750.adapter.in.http.Bh1750Servlet;
 import dev.sergevas.iot.env.system.adapter.in.http.SystemInfoServlet;
 import io.undertow.Handlers;
@@ -35,6 +33,11 @@ public class UndertowLauncher {
                                     .addMapping("/sensors/bh1750"),
                             servlet("SystemInfoServlet", SystemInfoServlet.class)
                                     .addMapping("sensors/system"));
+//                    .addServlet(JspServletBuilder.createServlet("TestJsp", "*.jsp").addMapping("/ui"))
+//            JspServletBuilder.setupDeployment(servletBuilder, new HashMap<String, JspPropertyGroup>(), new HashMap<String, TagLibraryInfo>(), new MyInstanceManager());
+//.addServlet(JspServletBuilder.createServlet("Default Jsp Servlet", "*.jsp"));
+//JspServletBuilder.setupDeployment(builder, new HashMap<String, JspPropertyGroup>(), new HashMap<String, TagLibraryInfo>(), new MyInstanceManager());
+
             DeploymentManager manager = defaultContainer().addDeployment(servletBuilder);
             manager.deploy();
             HttpHandler servletHandler = manager.start();

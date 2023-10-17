@@ -42,6 +42,11 @@
             <version>${undertow.version}</version>
         </dependency>
         <dependency>
+            <groupId>io.undertow.jastow</groupId>
+            <artifactId>jastow</artifactId>
+            <version>2.2.6.Final</version>
+        </dependency>
+        <dependency>
             <groupId>io.quarkiverse.jef</groupId>
             <artifactId>linux-core</artifactId>
             <version>${jef.version}</version>
