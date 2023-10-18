@@ -1,33 +1,34 @@
 package dev.sergevas.iot.env.system.adapter.in.http;
 
-import dev.sergevas.iot.env.EnvDeviceAppServiceManager;
 import dev.sergevas.iot.env.shared.domain.SensorName;
 import dev.sergevas.iot.env.shared.domain.SensorReadingsItemType;
 import dev.sergevas.iot.env.shared.domain.SensorReadingsType;
 import dev.sergevas.iot.env.shared.domain.SensorType;
 import dev.sergevas.iot.env.system.application.port.in.SystemInfoUseCase;
 import dev.sergevas.iot.env.system.domain.SystemInfo;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import io.quarkus.logging.Log;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
-//@WebServlet(name = "SystemInfoServlet", urlPatterns = {"/sensors/system"})
-public class SystemInfoServlet extends HttpServlet {
+@Path("sensors/system")
+public class SystemInfoResource {
 
-    private SystemInfoUseCase systemInfoUseCase;
+    private final SystemInfoUseCase systemInfoUseCase;
 
-    @Override
-    public void init() {
-        systemInfoUseCase = EnvDeviceAppServiceManager.getInstance().getSystemInfoUseCase();
+    @Inject
+    public SystemInfoResource(SystemInfoUseCase systemInfoUseCase) {
+        this.systemInfoUseCase = systemInfoUseCase;
     }
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, IOException {
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public SensorReadingsType getSystemData() {
         SystemInfo systemInfo = systemInfoUseCase.getSystemInfo();
         SensorReadingsType sensorReadingsType = new SensorReadingsType()
                 .addSReadingsItem(new SensorReadingsItemType()
@@ -35,10 +36,7 @@ public class SystemInfoServlet extends HttpServlet {
                         .sName(SensorName.ORANGE_PI_ZERO.getName())
                         .sTimestamp(OffsetDateTime.now(ZoneOffset.UTC))
                         .sData(String.valueOf(systemInfo.getCpuTemp())));
-        System.out.printf("SensorReadingsType with SystemInfo data: %s", sensorReadingsType);
-        try (PrintWriter writer = response.getWriter()) {
-            writer.println(sensorReadingsType.toString());
-            writer.flush();
-        }
+        Log.info(sensorReadingsType);
+        return sensorReadingsType;
     }
 }

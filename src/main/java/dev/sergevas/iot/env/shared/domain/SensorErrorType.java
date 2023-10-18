@@ -1,5 +1,9 @@
 package dev.sergevas.iot.env.shared.domain;
 
+import jakarta.json.bind.annotation.JsonbProperty;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+
 import java.time.OffsetDateTime;
 import java.util.Objects;
 import java.util.StringJoiner;
@@ -9,12 +13,12 @@ import java.util.StringJoiner;
  **/
 
 public class SensorErrorType {
-    private String eventId;
-    private String eventName;
-    private String sName;
-    private String sType;
-    private String desc;
-    private OffsetDateTime eventTimestamp;
+    private @Valid String eventId;
+    private @Valid String eventName;
+    private @Valid String sName;
+    private @Valid String sType;
+    private @Valid String desc;
+    private @Valid OffsetDateTime eventTimestamp;
 
     /**
      * An error event type id
@@ -25,13 +29,13 @@ public class SensorErrorType {
     }
 
 
-    //    @JsonbProperty("event_id")
-//    @NotNull
+    @JsonbProperty("event_id")
+    @NotNull
     public String getEventId() {
         return eventId;
     }
 
-    //    @JsonbProperty("event_id")
+    @JsonbProperty("event_id")
     public void setEventId(String eventId) {
         this.eventId = eventId;
     }
@@ -45,13 +49,13 @@ public class SensorErrorType {
     }
 
 
-    //    @JsonbProperty("event_name")
-//    @NotNull
+    @JsonbProperty("event_name")
+    @NotNull
     public String getEventName() {
         return eventName;
     }
 
-    //    @JsonbProperty("event_name")
+    @JsonbProperty("event_name")
     public void setEventName(String eventName) {
         this.eventName = eventName;
     }
@@ -65,12 +69,12 @@ public class SensorErrorType {
     }
 
 
-    //    @JsonbProperty("s_name")
+    @JsonbProperty("s_name")
     public String getsName() {
         return sName;
     }
 
-    //    @JsonbProperty("s_name")
+    @JsonbProperty("s_name")
     public void setsName(String sName) {
         this.sName = sName;
     }
@@ -84,12 +88,12 @@ public class SensorErrorType {
     }
 
 
-    //    @JsonbProperty("s_type")
+    @JsonbProperty("s_type")
     public String getsType() {
         return sType;
     }
 
-    //    @JsonbProperty("s_type")
+    @JsonbProperty("s_type")
     public void setsType(String sType) {
         this.sType = sType;
     }
@@ -103,12 +107,12 @@ public class SensorErrorType {
     }
 
 
-    //    @JsonbProperty("desc")
+    @JsonbProperty("desc")
     public String getDesc() {
         return desc;
     }
 
-    //    @JsonbProperty("desc")
+    @JsonbProperty("desc")
     public void setDesc(String desc) {
         this.desc = desc;
     }
@@ -122,13 +126,13 @@ public class SensorErrorType {
     }
 
 
-    //    @JsonbProperty("event_timestamp")
-//    @NotNull
+    @JsonbProperty("event_timestamp")
+    @NotNull
     public OffsetDateTime getEventTimestamp() {
         return eventTimestamp;
     }
 
-    //    @JsonbProperty("event_timestamp")
+    @JsonbProperty("event_timestamp")
     public void setEventTimestamp(OffsetDateTime eventTimestamp) {
         this.eventTimestamp = eventTimestamp;
     }

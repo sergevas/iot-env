@@ -1,8 +1,7 @@
 package dev.sergevas.iot.env.bh1750.adapter.out.i2c;
 
-import dev.sergevas.iot.env.EnvDeviceAppConfig;
 import dev.sergevas.iot.env.bh1750.application.port.out.LightIntensity;
-import dev.sergevas.iot.env.hardware.port.out.HardwareException;
+import dev.sergevas.iot.env.hardware.application.port.out.HardwareException;
 import dev.sergevas.iot.env.performance.Profiler;
 import dev.sergevas.iot.env.shared.application.port.out.SensorException;
 import dev.sergevas.iot.env.shared.application.service.StringUtil;
@@ -13,9 +12,15 @@ import io.quarkiverse.jef.java.embedded.framework.linux.core.NativeIOException;
 import io.quarkiverse.jef.java.embedded.framework.linux.i2c.I2CBus;
 import io.quarkiverse.jef.java.embedded.framework.linux.i2c.I2CInterface;
 import io.quarkiverse.jef.java.embedded.framework.linux.i2c.SMBus;
+import io.quarkiverse.jef.java.embedded.framework.runtime.i2c.I2C;
+import io.quarkus.logging.Log;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import java.nio.ByteBuffer;
 
+@ApplicationScoped
 public class Bh1750Adapter implements LightIntensity {
 
     public static final byte GY_302_BH1750_POWER_DOWN = 0x00;
@@ -23,16 +28,26 @@ public class Bh1750Adapter implements LightIntensity {
     public static final byte GY_302_BH1750_ONE_TIME_H_RESOLUTION_MODE = (byte) 0x20;
     public static final int GY_302_BH1750_READINGS_DATA_LENGTH = 2;
 
-    private final SMBus smBus;
+    @I2C(name = "i2c0")
+    I2CBus i2C0Bus;
+    @ConfigProperty(name = "bh1750.moduleAddress")
+    int bh1750ModuleAddress;
+    private SMBus smBus;
 
-    public Bh1750Adapter(I2CBus i2CBus, EnvDeviceAppConfig config) {
+    public Bh1750Adapter() {
+    }
+
+    @PostConstruct
+    public void initSMBus() {
         try {
-            smBus = i2CBus.select(config.getBh1750ModuleAddress()).getSmBus();
+            smBus = i2C0Bus.select(bh1750ModuleAddress).getSmBus();
         } catch (NativeIOException e) {
-            throw new HardwareException(String.format("Unable to select I2C address [%d]", config.getBh1750ModuleAddress()));
+            Log.error(e);
+            throw new HardwareException(e);
         }
     }
 
+    @Override
     public double getLightIntensity() {
         double lightIntensity;
         try {
@@ -40,19 +55,19 @@ public class Bh1750Adapter implements LightIntensity {
             smBus.writeByte(GY_302_BH1750_POWER_ON);
             smBus.writeByte(GY_302_BH1750_ONE_TIME_H_RESOLUTION_MODE);
             Thread.sleep(180); // H-Resolution Mode max measurement time
-            System.out.println("Reading data from GY-302 BH1750...");
+            Log.debug("Reading data from GY-302 BH1750...");
             byte[] readings = new byte[GY_302_BH1750_READINGS_DATA_LENGTH];
             I2CInterface i2CInterface = smBus.getInterface();
             i2CInterface.read(ByteBuffer.wrap(readings), GY_302_BH1750_READINGS_DATA_LENGTH);
-            System.out.printf("GY-302 BH1750 readings: %s", StringUtil.toHexString(readings));
+            Log.infof("GY-302 BH1750 readings: %s", StringUtil.toHexString(readings));
             smBus.writeByte(GY_302_BH1750_POWER_DOWN);
             lightIntensity = fromRawReadingsToLightIntensity(readings);
         } catch (Exception e) {
-            System.err.println("Unable to get light intensity " + e);
+            Log.error("Unable to get light intensity", e);
             throw new SensorException(ErrorEvent.E_BH1750_0001.getId(), SensorType.LIGHT, SensorName.BH1750,
                     ErrorEvent.E_BH1750_0001.getName(), e);
         }
-        System.out.printf(Profiler.getCurrentMsg("Bh1750Adapter.getLightIntensity()",
+        Log.debug(Profiler.getCurrentMsg("Bh1750Adapter.getLightIntensity()",
                 "getLightIntensityComplete"));
         return lightIntensity;
     }
@@ -61,8 +76,8 @@ public class Bh1750Adapter implements LightIntensity {
         Profiler.init("Bh1750Adapter.fromRawReadingsToLightIntensity()");
         double lightIntensity = Math.round((Byte.toUnsignedInt(i2cReadings[0]) << 8
                 | Byte.toUnsignedInt(i2cReadings[1])) / 1.2 * 100.0) / 100.0;
-        System.out.printf("Light intensity: %f lux", lightIntensity);
-        System.out.printf(Profiler.getCurrentMsg("Bh1750Adapter.fromRawReadingsToLightIntensity()",
+        Log.debugf("Light intensity: %d lux", lightIntensity);
+        Log.debug(Profiler.getCurrentMsg("Bh1750Adapter.fromRawReadingsToLightIntensity()",
                 "fromRawReadingsToLightIntensityComplete"));
         return lightIntensity;
     }

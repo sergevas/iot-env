@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.StringJoiner;
 
 public class SystemInfo {
-
     private double cpuTemp;
 
     public double getCpuTemp() {

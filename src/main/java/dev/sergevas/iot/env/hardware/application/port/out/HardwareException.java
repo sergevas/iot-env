@@ -1,4 +1,4 @@
-package dev.sergevas.iot.env.hardware.port.out;
+package dev.sergevas.iot.env.hardware.application.port.out;
 
 public class HardwareException extends RuntimeException {
 
