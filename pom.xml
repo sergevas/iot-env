@@ -13,7 +13,7 @@
         <maven.compiler.release>17</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <piranha.version>24.1.0</piranha.version>
+        <piranha.version>23.10.0</piranha.version>
         <jef.version>3.0.2</jef.version>
         <mockito.version>5.3.1</mockito.version>
         <surefire-plugin.version>3.0.0</surefire-plugin.version>
