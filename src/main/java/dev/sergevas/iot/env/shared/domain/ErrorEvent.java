@@ -1,4 +1,4 @@
-package dev.sergevas.iot.env.shared.entity;
+package dev.sergevas.iot.env.shared.domain;
 
 public enum ErrorEvent {
     E_BH1750_0001("E-BH1750-0001", "BH1750 data read error"),

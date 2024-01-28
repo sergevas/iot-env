@@ -1,7 +1,8 @@
-package dev.sergevas.iot.env.shared.exception;
+package dev.sergevas.iot.env.shared.application.port.out;
 
-import dev.sergevas.iot.env.shared.entity.SensorName;
-import dev.sergevas.iot.env.shared.entity.SensorType;
+
+import dev.sergevas.iot.env.shared.domain.SensorName;
+import dev.sergevas.iot.env.shared.domain.SensorType;
 
 public class SensorException extends RuntimeException {
 

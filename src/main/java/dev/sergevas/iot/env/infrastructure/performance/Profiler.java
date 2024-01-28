@@ -1,4 +1,4 @@
-package dev.sergevas.iot.env.performance.control;
+package dev.sergevas.iot.env.infrastructure.performance;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,11 +19,10 @@ public class Profiler {
     }
 
     public static String getCurrentMsg(String aStartPointName, String aCurrentPointName) {
-        return new StringBuilder("Profile")
-                .append(" [")
-                .append(aCurrentPointName)
-                .append("] ")
-                .append(current(aStartPointName))
-                .toString();
+        return "Profile" +
+                " [" +
+                aCurrentPointName +
+                "] " +
+                current(aStartPointName);
     }
 }

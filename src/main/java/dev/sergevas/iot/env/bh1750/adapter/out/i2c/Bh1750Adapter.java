@@ -2,13 +2,13 @@ package dev.sergevas.iot.env.bh1750.adapter.out.i2c;
 
 import dev.sergevas.iot.env.EnvDeviceAppConfig;
 import dev.sergevas.iot.env.bh1750.application.port.out.LightIntensity;
-import dev.sergevas.iot.env.hardware.adapter.HardwareException;
-import dev.sergevas.iot.env.performance.control.Profiler;
-import dev.sergevas.iot.env.shared.control.StringUtil;
-import dev.sergevas.iot.env.shared.entity.ErrorEvent;
-import dev.sergevas.iot.env.shared.entity.SensorName;
-import dev.sergevas.iot.env.shared.entity.SensorType;
-import dev.sergevas.iot.env.shared.exception.SensorException;
+import dev.sergevas.iot.env.hardware.port.out.HardwareException;
+import dev.sergevas.iot.env.infrastructure.performance.Profiler;
+import dev.sergevas.iot.env.shared.application.port.out.SensorException;
+import dev.sergevas.iot.env.shared.application.service.HexStringUtil;
+import dev.sergevas.iot.env.shared.domain.ErrorEvent;
+import dev.sergevas.iot.env.shared.domain.SensorName;
+import dev.sergevas.iot.env.shared.domain.SensorType;
 import io.quarkiverse.jef.java.embedded.framework.linux.core.NativeIOException;
 import io.quarkiverse.jef.java.embedded.framework.linux.i2c.I2CBus;
 import io.quarkiverse.jef.java.embedded.framework.linux.i2c.I2CInterface;
@@ -44,7 +44,7 @@ public class Bh1750Adapter implements LightIntensity {
             byte[] readings = new byte[GY_302_BH1750_READINGS_DATA_LENGTH];
             I2CInterface i2CInterface = smBus.getInterface();
             i2CInterface.read(ByteBuffer.wrap(readings), GY_302_BH1750_READINGS_DATA_LENGTH);
-            System.out.printf("GY-302 BH1750 readings: %s", StringUtil.toHexString(readings));
+            System.out.printf("GY-302 BH1750 readings: %s%n", HexStringUtil.toHexString(readings));
             smBus.writeByte(GY_302_BH1750_POWER_DOWN);
             lightIntensity = fromRawReadingsToLightIntensity(readings);
         } catch (Exception e) {
@@ -52,8 +52,7 @@ public class Bh1750Adapter implements LightIntensity {
             throw new SensorException(ErrorEvent.E_BH1750_0001.getId(), SensorType.LIGHT, SensorName.BH1750,
                     ErrorEvent.E_BH1750_0001.getName(), e);
         }
-        System.out.printf(Profiler.getCurrentMsg("Bh1750Adapter.getLightIntensity()",
-                "getLightIntensityComplete"));
+        System.out.println(Profiler.getCurrentMsg("Bh1750Adapter.getLightIntensity()", "getLightIntensityComplete"));
         return lightIntensity;
     }
 
@@ -61,8 +60,8 @@ public class Bh1750Adapter implements LightIntensity {
         Profiler.init("Bh1750Adapter.fromRawReadingsToLightIntensity()");
         double lightIntensity = Math.round((Byte.toUnsignedInt(i2cReadings[0]) << 8
                 | Byte.toUnsignedInt(i2cReadings[1])) / 1.2 * 100.0) / 100.0;
-        System.out.printf("Light intensity: %f lux", lightIntensity);
-        System.out.printf(Profiler.getCurrentMsg("Bh1750Adapter.fromRawReadingsToLightIntensity()",
+        System.out.printf("Light intensity: %f lux%n", lightIntensity);
+        System.out.println(Profiler.getCurrentMsg("Bh1750Adapter.fromRawReadingsToLightIntensity()",
                 "fromRawReadingsToLightIntensityComplete"));
         return lightIntensity;
     }

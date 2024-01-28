@@ -1,10 +1,10 @@
 package dev.sergevas.iot.env.system.adapter.in.http;
 
 import dev.sergevas.iot.env.EnvDeviceAppServiceManager;
-import dev.sergevas.iot.env.shared.entity.SensorName;
-import dev.sergevas.iot.env.shared.entity.SensorReadingsItemType;
-import dev.sergevas.iot.env.shared.entity.SensorReadingsType;
-import dev.sergevas.iot.env.shared.entity.SensorType;
+import dev.sergevas.iot.env.shared.domain.SensorName;
+import dev.sergevas.iot.env.shared.domain.SensorReadingsItemType;
+import dev.sergevas.iot.env.shared.domain.SensorReadingsType;
+import dev.sergevas.iot.env.shared.domain.SensorType;
 import dev.sergevas.iot.env.system.application.port.in.SystemInfoUseCase;
 import dev.sergevas.iot.env.system.domain.SystemInfo;
 import jakarta.servlet.http.HttpServlet;

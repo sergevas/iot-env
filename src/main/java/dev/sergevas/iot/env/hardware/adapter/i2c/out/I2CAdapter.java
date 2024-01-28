@@ -1,7 +1,7 @@
 package dev.sergevas.iot.env.hardware.adapter.i2c.out;
 
 import dev.sergevas.iot.env.EnvDeviceAppConfig;
-import dev.sergevas.iot.env.hardware.adapter.HardwareException;
+import dev.sergevas.iot.env.hardware.port.out.HardwareException;
 import dev.sergevas.iot.env.hardware.port.out.I2C;
 import io.quarkiverse.jef.java.embedded.framework.linux.core.NativeIOException;
 import io.quarkiverse.jef.java.embedded.framework.linux.i2c.I2CBus;

@@ -2,17 +2,20 @@ package dev.sergevas.iot.env.bh1750.adapter.in.http;
 
 import dev.sergevas.iot.env.EnvDeviceAppServiceManager;
 import dev.sergevas.iot.env.bh1750.application.port.in.Bh1750UseCase;
-import dev.sergevas.iot.env.shared.entity.SensorName;
-import dev.sergevas.iot.env.shared.entity.SensorReadingsItemType;
-import dev.sergevas.iot.env.shared.entity.SensorType;
+import dev.sergevas.iot.env.shared.application.port.out.SensorException;
+import dev.sergevas.iot.env.shared.domain.SensorName;
+import dev.sergevas.iot.env.shared.domain.SensorReadingsItemType;
+import dev.sergevas.iot.env.shared.domain.SensorType;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
+
+import static dev.sergevas.iot.env.infrastructure.time.DateTimeGen.now;
+import static dev.sergevas.iot.env.shared.adapter.in.web.SensorErrorTypeMapper.toResponse;
+import static dev.sergevas.iot.env.shared.application.service.ExceptionUtils.getStackTrace;
 
 public class Bh1750Servlet extends HttpServlet {
 
@@ -25,14 +28,20 @@ public class Bh1750Servlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        SensorReadingsItemType sensorReadingsType = new SensorReadingsItemType()
-                .sType(SensorType.LIGHT.name())
-                .sName(SensorName.BH1750.getName())
-                .sTimestamp(OffsetDateTime.now(ZoneOffset.UTC))
-                .sData(String.valueOf(bh1750UseCase.getSensorReadingsItemTypeForBh1750().getLightIntensity()));
-        System.out.printf("SensorReadingsType with Bh1750 data: %s", sensorReadingsType);
+        Object responseBody;
+        try {
+            responseBody = new SensorReadingsItemType()
+                    .sType(SensorType.LIGHT.name())
+                    .sName(SensorName.BH1750.getName())
+                    .sTimestamp(now())
+                    .sData(String.valueOf(bh1750UseCase.getSensorReadingsItemTypeForBh1750().lightIntensity()));
+            System.out.printf("SensorReadingsType with Bh1750 data: %s%n", responseBody);
+        } catch (SensorException e) {
+            System.err.println(getStackTrace(e));
+            responseBody = toResponse(e);
+        }
         try (PrintWriter writer = response.getWriter()) {
-            writer.println(sensorReadingsType.toString());
+            writer.println(responseBody);
             writer.flush();
         }
     }

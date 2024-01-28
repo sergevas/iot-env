@@ -1,6 +1,6 @@
-package dev.sergevas.iot.env.shared.control;
+package dev.sergevas.iot.env.shared.application.service;
 
-public class StringUtil {
+public class HexStringUtil {
 
     public static void appendHexString(StringBuilder builder, byte[] bytes) {
         for (byte b : bytes) {

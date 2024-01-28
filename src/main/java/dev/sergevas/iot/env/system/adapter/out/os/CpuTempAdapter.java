@@ -1,15 +1,15 @@
 package dev.sergevas.iot.env.system.adapter.out.os;
 
-import dev.sergevas.iot.env.performance.control.Profiler;
-import dev.sergevas.iot.env.shared.entity.SensorName;
-import dev.sergevas.iot.env.shared.entity.SensorType;
-import dev.sergevas.iot.env.shared.exception.SensorException;
+import dev.sergevas.iot.env.infrastructure.performance.Profiler;
+import dev.sergevas.iot.env.shared.application.port.out.SensorException;
+import dev.sergevas.iot.env.shared.domain.SensorName;
+import dev.sergevas.iot.env.shared.domain.SensorType;
 import dev.sergevas.iot.env.system.application.port.out.CpuTemp;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
-import static dev.sergevas.iot.env.shared.entity.ErrorEvent.E_SYSTEM_0001;
+import static dev.sergevas.iot.env.shared.domain.ErrorEvent.E_SYSTEM_0001;
 
 public class CpuTempAdapter implements CpuTemp {
 
