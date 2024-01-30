@@ -1,15 +1,15 @@
 package dev.sergevas.iot.env.shared.application.service.json;
 
-public class ValueComponent<T> implements Component {
+public class Value<T> implements Component {
 
     private final T value;
 
-    public ValueComponent(T value) {
+    public Value(T value) {
         this.value = value;
     }
 
-    public static <T> ValueComponent<T> of(T value) {
-        return new ValueComponent<>(value);
+    public static <T> Value<T> of(T value) {
+        return new Value<>(value);
     }
 
     @Override
