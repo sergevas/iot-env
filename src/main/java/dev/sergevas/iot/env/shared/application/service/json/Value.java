@@ -1,5 +1,8 @@
 package dev.sergevas.iot.env.shared.application.service.json;
 
+import java.util.Objects;
+import java.util.Optional;
+
 public class Value<T> implements Component {
 
     private final T value;
@@ -14,6 +17,6 @@ public class Value<T> implements Component {
 
     @Override
     public String print() {
-        return value.toString();
+        return Optional.ofNullable(value).map(Objects::toString).orElse(null);
     }
 }

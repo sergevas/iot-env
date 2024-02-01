@@ -20,13 +20,12 @@ public class SensorReadingsType {
         return this;
     }
 
-
-    //    @JsonbProperty("s_readings")
+    // @JsonbProperty("s_readings")
     public List<SensorReadingsItemType> getsReadings() {
         return sReadings;
     }
 
-    //    @JsonbProperty("s_readings")
+    // @JsonbProperty("s_readings")
     public void setsReadings(List<SensorReadingsItemType> sReadings) {
         this.sReadings = sReadings;
     }

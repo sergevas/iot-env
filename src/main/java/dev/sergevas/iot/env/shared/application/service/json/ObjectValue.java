@@ -6,17 +6,19 @@ import java.util.stream.Collectors;
 
 public class ObjectValue implements Component {
 
-    private final List<Component> leaves = new ArrayList<>();
+    private final List<Component> fields = new ArrayList<>();
 
     public ObjectValue addField(Component component) {
-        leaves.add(component);
+        fields.add(component);
         return this;
     }
 
     @Override
     public String print() {
         return "{" +
-                leaves.stream().map(Component::print).collect(Collectors.joining(",")) +
+                fields.stream()
+                        .map(Component::print)
+                        .collect(Collectors.joining(",")) +
                 "}";
     }
 

@@ -13,7 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import static dev.sergevas.iot.env.infrastructure.time.DateTimeGen.now;
 import static dev.sergevas.iot.env.shared.adapter.in.web.SensorErrorTypeMapper.toResponse;
 import static dev.sergevas.iot.env.shared.application.service.ExceptionUtils.getStackTrace;
 
@@ -30,17 +29,20 @@ public class Bh1750Servlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Object responseBody;
         try {
+            var bh1750Readings = bh1750UseCase.getSensorReadingsItemTypeForBh1750();
             responseBody = new SensorReadingsItemType()
                     .sType(SensorType.LIGHT.name())
                     .sName(SensorName.BH1750.getName())
-                    .sTimestamp(now())
-                    .sData(String.valueOf(bh1750UseCase.getSensorReadingsItemTypeForBh1750().lightIntensity()));
+                    .sTimestamp(bh1750Readings.lightIntensityTimestamp())
+                    .sData(String.valueOf(bh1750Readings.lightIntensity()))
+                    .toJson();
             System.out.printf("SensorReadingsType with Bh1750 data: %s%n", responseBody);
         } catch (SensorException e) {
             System.err.println(getStackTrace(e));
             responseBody = toResponse(e);
         }
         try (PrintWriter writer = response.getWriter()) {
+            response.addHeader("Content-Type", "application/json");
             writer.println(responseBody);
             writer.flush();
         }
