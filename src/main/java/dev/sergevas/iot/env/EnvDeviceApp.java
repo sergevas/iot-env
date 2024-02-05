@@ -4,8 +4,8 @@ import cloud.piranha.embedded.EmbeddedPiranha;
 import cloud.piranha.embedded.EmbeddedPiranhaBuilder;
 import cloud.piranha.http.impl.DefaultHttpServer;
 import cloud.piranha.http.webapp.HttpWebApplicationServer;
-import dev.sergevas.iot.env.bh1750.adapter.in.http.Bh1750Servlet;
-import dev.sergevas.iot.env.system.adapter.in.http.SystemInfoServlet;
+import dev.sergevas.iot.env.adapter.in.http.bh1750.Bh1750Servlet;
+import dev.sergevas.iot.env.adapter.in.http.system.SystemInfoServlet;
 
 import java.io.IOException;
 import java.io.InputStream;

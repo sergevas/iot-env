@@ -1,15 +1,15 @@
 package dev.sergevas.iot.env;
 
-import dev.sergevas.iot.env.bh1750.adapter.out.i2c.Bh1750Adapter;
-import dev.sergevas.iot.env.bh1750.application.port.in.Bh1750UseCase;
-import dev.sergevas.iot.env.bh1750.application.port.out.LightIntensity;
-import dev.sergevas.iot.env.bh1750.application.service.Bh1750Service;
-import dev.sergevas.iot.env.hardware.adapter.i2c.out.I2CAdapter;
-import dev.sergevas.iot.env.hardware.port.out.I2C;
-import dev.sergevas.iot.env.system.adapter.out.os.CpuTempAdapter;
-import dev.sergevas.iot.env.system.application.port.in.SystemInfoUseCase;
-import dev.sergevas.iot.env.system.application.port.out.CpuTemp;
-import dev.sergevas.iot.env.system.application.service.SystemInfoService;
+import dev.sergevas.iot.env.adapter.out.i2c.I2CAdapter;
+import dev.sergevas.iot.env.adapter.out.i2c.bh1750.Bh1750Adapter;
+import dev.sergevas.iot.env.adapter.out.system.CpuTempAdapter;
+import dev.sergevas.iot.env.application.port.in.Bh1750UseCase;
+import dev.sergevas.iot.env.application.port.in.SystemInfoUseCase;
+import dev.sergevas.iot.env.application.port.out.CpuTemp;
+import dev.sergevas.iot.env.application.port.out.I2C;
+import dev.sergevas.iot.env.application.port.out.LightIntensity;
+import dev.sergevas.iot.env.application.service.Bh1750Service;
+import dev.sergevas.iot.env.application.service.SystemInfoService;
 import io.quarkiverse.jef.java.embedded.framework.linux.i2c.I2CBus;
 
 public class EnvDeviceAppServiceManager {
@@ -40,8 +40,7 @@ public class EnvDeviceAppServiceManager {
         EnvDeviceAppServiceManager mgr = new EnvDeviceAppServiceManager();
         mgr.envDeviceAppConfig = initEnvDeviceAppConfig();
         mgr.systemInfoUseCase = initSystemInfoUseCase(initCpuTemp());
-        mgr.bh1750UseCase = initBh1750UseCase(initLightIntensity(initI2C(mgr.envDeviceAppConfig).getI2CBus(),
-                mgr.envDeviceAppConfig));
+        mgr.bh1750UseCase = initBh1750UseCase(initLightIntensity(initI2C(mgr.envDeviceAppConfig).getI2CBus(), mgr.envDeviceAppConfig));
         return mgr;
     }
 
