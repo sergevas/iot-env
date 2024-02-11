@@ -1,7 +1,7 @@
 package dev.sergevas.iot.env.adapter.out.system;
 
-import dev.sergevas.iot.env.application.port.out.CpuTemp;
 import dev.sergevas.iot.env.application.port.out.SensorException;
+import dev.sergevas.iot.env.application.port.out.health.CpuTempFetcher;
 import dev.sergevas.iot.env.application.service.Profiler;
 import dev.sergevas.iot.env.domain.SensorName;
 import dev.sergevas.iot.env.domain.SensorType;
@@ -16,7 +16,7 @@ import static dev.sergevas.iot.env.domain.ErrorEvent.E_SYSTEM_0001;
 
 @ApplicationScoped
 @IfBuildProfile("prod")
-public class CpuTempAdapter implements CpuTemp {
+public class CpuTempAdapter implements CpuTempFetcher {
 
     public static final String[] FETCH_CPU_TEMP_CMD = new String[]{"cat", "/sys/class/thermal/thermal_zone0/temp"};
     private final ProcessBuilder processBuilder;

@@ -1,4 +1,4 @@
-package dev.sergevas.iot.env.domain;
+package dev.sergevas.iot.env.domain.health;
 
 import java.util.Objects;
 import java.util.StringJoiner;

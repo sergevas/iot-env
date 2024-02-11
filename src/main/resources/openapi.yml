@@ -143,7 +143,7 @@ paths:
         Can be used to get readings of temperature, humidity, and pressure readings,
         obtained from the BME280 environmental data sensor
   /sensors/system:
-    summary: 'The system current state and health data, e.g. CPU temperature, free memory, etc.'
+    summary: 'The health current state and health data, e.g. CPU temperature, free memory, etc.'
     description: |-
       This resource allows to obtain system current state and health data,
       e.g. CPU temperature, free memory, obtained from the SBC OS
@@ -182,7 +182,7 @@ paths:
         '500':
           $ref: '#/components/responses/sensor_error'
       operationId: GetSystemData
-      summary: 'Get system state and health data from the SBC OS'
+      summary: 'Get health state and health data from the SBC OS'
       description: |-
         Can be used to get readings of system state and health data readings, obtained from the SBC OS
 components:
