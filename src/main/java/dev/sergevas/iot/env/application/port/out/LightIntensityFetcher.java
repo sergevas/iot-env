@@ -1,6 +1,6 @@
 package dev.sergevas.iot.env.application.port.out;
 
-public interface LightIntensity {
+public interface LightIntensityFetcher {
 
     double getLightIntensity();
 }
