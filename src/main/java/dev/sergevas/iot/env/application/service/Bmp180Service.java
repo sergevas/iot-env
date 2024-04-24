@@ -9,10 +9,8 @@ import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class Bmp180Service implements Bmp180UseCase {
-
     private final TemperatureFetcher temperatureFetcher;
     private final PressureFetcher pressureFetcher;
-
 
     @Inject
     public Bmp180Service(TemperatureFetcher temperatureFetcher, PressureFetcher pressureFetcher) {
