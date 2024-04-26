@@ -261,7 +261,7 @@ components:
           description: An error event descriptive name
           type: string
         s_name:
-          description: A sensor type, e.g. BH1750
+          description: A sensor type, e.g. BH1750 (Ambient light)
           type: string
         s_type:
           description: A sensor name, e.g. TEMP (temperature)

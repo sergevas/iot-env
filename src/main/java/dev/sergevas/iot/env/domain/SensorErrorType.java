@@ -61,7 +61,7 @@ public class SensorErrorType {
     }
 
     /**
-     * A sensor type, e.g. BH1750
+     * A sensor name, e.g. TEMP (temperature)
      **/
     public SensorErrorType sName(String sName) {
         this.sName = sName;
@@ -80,7 +80,7 @@ public class SensorErrorType {
     }
 
     /**
-     * A sensor name, e.g. TEMP (temperature)
+     * A sensor type, e.g. BH1750 (Ambient light sensor)
      **/
     public SensorErrorType sType(String sType) {
         this.sType = sType;
