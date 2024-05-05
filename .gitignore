@@ -28,3 +28,4 @@ target/
 .settings/
 .idea
 *.iml
+.quarkus/
