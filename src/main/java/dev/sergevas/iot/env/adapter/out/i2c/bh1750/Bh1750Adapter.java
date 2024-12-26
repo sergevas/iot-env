@@ -1,7 +1,7 @@
 package dev.sergevas.iot.env.adapter.out.i2c.bh1750;
 
 import dev.sergevas.iot.env.application.port.out.HardwareException;
-import dev.sergevas.iot.env.application.port.out.LightIntensityFetcher;
+import dev.sergevas.iot.env.application.port.out.LightIntensityReader;
 import dev.sergevas.iot.env.application.port.out.SensorException;
 import dev.sergevas.iot.env.application.service.Profiler;
 import dev.sergevas.iot.env.application.service.StringUtil;
@@ -23,7 +23,7 @@ import java.nio.ByteBuffer;
 
 @ApplicationScoped
 @IfBuildProfile("prod")
-public class Bh1750Adapter implements LightIntensityFetcher {
+public class Bh1750Adapter implements LightIntensityReader {
 
     public static final byte GY_302_BH1750_POWER_DOWN = 0x00;
     public static final byte GY_302_BH1750_POWER_ON = 0x01;
@@ -50,7 +50,7 @@ public class Bh1750Adapter implements LightIntensityFetcher {
     }
 
     @Override
-    public double getLightIntensity() {
+    public double readLightIntensity() {
         double lightIntensity;
         try {
             Profiler.init("Bh1750Adapter.getLightIntensity()");
