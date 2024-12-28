@@ -32,12 +32,11 @@ public class Bh1750Adapter implements LightIntensityReader {
 
     @I2C(name = "i2c0")
     I2CBus i2C0Bus;
+
     @ConfigProperty(name = "bh1750.moduleAddress")
     int bh1750ModuleAddress;
-    private SMBus smBus;
 
-    public Bh1750Adapter() {
-    }
+    private SMBus smBus;
 
     @PostConstruct
     public void initSMBus() {
