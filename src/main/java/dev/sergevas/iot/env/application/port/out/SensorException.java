@@ -54,4 +54,14 @@ public class SensorException extends RuntimeException {
     public SensorName getSensorName() {
         return sensorName;
     }
+
+    @Override
+    public String toString() {
+        return "SensorException{" +
+                "eventId='" + eventId + '\'' +
+                ", sensorType=" + sensorType +
+                ", sensorName=" + sensorName +
+                ", message=" + super.getMessage() +
+                '}';
+    }
 }

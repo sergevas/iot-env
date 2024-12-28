@@ -4,5 +4,6 @@ import dev.sergevas.iot.env.domain.Sht3xReadings;
 
 public interface Sht3xSpec {
 
+    public void softReset();
     Sht3xReadings readTemperatureAndHumidity();
 }
