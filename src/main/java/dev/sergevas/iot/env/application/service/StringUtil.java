@@ -13,4 +13,12 @@ public class StringUtil {
         appendHexString(sb, bytes);
         return sb.toString().trim();
     }
+
+    public static String toHexString(int[] rowData) {
+        StringBuilder sb = new StringBuilder();
+        for (int rowDatum : rowData) {
+            sb.append(String.format("%02X ", rowDatum));
+        }
+        return sb.toString().trim();
+    }
 }
