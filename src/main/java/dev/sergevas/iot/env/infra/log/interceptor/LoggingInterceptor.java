@@ -46,14 +46,12 @@ public class LoggingInterceptor {
             }
             Log.info(startLogMsgBuilder.toString());
         }
-        long invocationTime = 0;
+        var started = System.nanoTime();
         try {
-            var started = System.nanoTime();
             result = context.proceed();
-            invocationTime = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - started);
         } catch (Exception e) {
             Log.infof(e, "@traceId=%s @activity=%s::%s @status=error @took=%d @message=%s",
-                    traceId, targetName, methodName, invocationTime, e.getMessage());
+                    traceId, targetName, methodName, getInvocationTime(started), e.getMessage());
             throw e;
         }
         if (annotation != null) {
@@ -62,12 +60,16 @@ public class LoggingInterceptor {
                     .append(traceId)
                     .append(" @activity=").append(targetName).append("::").append(methodName)
                     .append(" @status=").append("complete")
-                    .append(" @took=").append(invocationTime);
+                    .append(" @took=").append(getInvocationTime(started));
             if (annotation.logReturnVal() && nonNull(result)) {
                 completeLogMsgBuilder.append(" @returnVal=").append(result);
             }
             Log.info(completeLogMsgBuilder.toString());
         }
         return result;
+    }
+
+    private long getInvocationTime(long started) {
+        return TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - started);
     }
 }

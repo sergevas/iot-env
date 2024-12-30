@@ -1,28 +1,29 @@
 package dev.sergevas.iot.env.adapter.out.i2c.sht3x;
 
 import dev.sergevas.iot.env.adapter.out.i2c.I2cDataReader;
-import dev.sergevas.iot.env.application.port.out.HardwareException;
+import dev.sergevas.iot.env.adapter.out.i2c.RawDataConvertor;
 import dev.sergevas.iot.env.application.port.out.SensorException;
 import dev.sergevas.iot.env.application.port.out.Sht3xSpec;
 import dev.sergevas.iot.env.application.service.StringUtil;
-import dev.sergevas.iot.env.domain.SensorName;
-import dev.sergevas.iot.env.domain.SensorType;
 import dev.sergevas.iot.env.domain.sht3x.HeaterState;
 import dev.sergevas.iot.env.domain.sht3x.Sht3xReadings;
+import dev.sergevas.iot.env.domain.sht3x.StatusRegister;
 import dev.sergevas.iot.env.infra.log.interceptor.Loggable;
-import io.quarkiverse.jef.java.embedded.framework.linux.core.NativeIOException;
 import io.quarkiverse.jef.java.embedded.framework.linux.i2c.I2CBus;
-import io.quarkiverse.jef.java.embedded.framework.linux.i2c.SMBus;
 import io.quarkiverse.jef.java.embedded.framework.runtime.i2c.I2C;
 import io.quarkus.arc.profile.IfBuildProfile;
 import io.quarkus.logging.Log;
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
+import java.util.Arrays;
+
+import static dev.sergevas.iot.env.adapter.out.i2c.I2CInterfaceProvider.i2C;
 import static dev.sergevas.iot.env.adapter.out.i2c.I2cCommandWriter.writeCommand;
 import static dev.sergevas.iot.env.domain.ErrorEvent.E_SHT3X_0001;
 import static dev.sergevas.iot.env.domain.ErrorEvent.E_SHT3X_0002;
+import static dev.sergevas.iot.env.domain.SensorName.SHT3x;
+import static dev.sergevas.iot.env.domain.SensorType.TEMP_HUMID;
 
 @ApplicationScoped
 @IfBuildProfile("prod")
@@ -30,9 +31,12 @@ public class Sht3xAdapter implements Sht3xSpec {
 
     public static final int COMMAND_SHT3X_SOFT_RESET = 0x30A2;
     public static final int COMMAND_SINGLE_SHOT_HIGH_REPEAT_WITH_CLOCK_STRETCH = 0x2C06;
+    public static final int COMMAND_SINGLE_SHOT_HIGH_REPEAT_WO_CLOCK_STRETCH = 0x2400;
     public static final int COMMAND_HEATER_ENABLE = 0x306D;
     public static final int COMMAND_HEATER_DISABLE = 0x3066;
+    public static final int COMMAND_READ_STATUS_REGISTER = 0xF32D;
     public static final int SHT3X_READINGS_DATA_LENGTH = 6;
+    public static final int SHT3X_STATUS_DATA_LENGTH = 3;
 
     @I2C(name = "i2c0")
     I2CBus i2C0Bus;
@@ -40,27 +44,13 @@ public class Sht3xAdapter implements Sht3xSpec {
     @ConfigProperty(name = "sht3x.moduleAddress")
     int sht3xModuleAddress;
 
-    private SMBus smBus;
-
-    @PostConstruct
-    public void initSMBus() {
-        try {
-            smBus = i2C0Bus.select(sht3xModuleAddress).getSmBus();
-            softReset();
-        } catch (NativeIOException e) {
-            Log.error(e);
-            throw new HardwareException(e);
-        }
-    }
-
     @Loggable
     @Override
     public void softReset() {
         try {
-            writeCommand(smBus, COMMAND_SHT3X_SOFT_RESET);
+            writeCommand(i2C(sht3xModuleAddress, i2C0Bus), COMMAND_SHT3X_SOFT_RESET);
         } catch (Exception e) {
-            throw new SensorException(E_SHT3X_0002.getId(), SensorType.TEMP_HUMID, SensorName.SHT3x,
-                    E_SHT3X_0002.getName(), e);
+            throw new SensorException(E_SHT3X_0002.getId(), TEMP_HUMID, SHT3x, E_SHT3X_0002.getName(), e);
         }
     }
 
@@ -68,20 +58,37 @@ public class Sht3xAdapter implements Sht3xSpec {
     @Override
     public Sht3xReadings readTemperatureAndHumidity() {
         try {
-            writeCommand(smBus, COMMAND_SINGLE_SHOT_HIGH_REPEAT_WITH_CLOCK_STRETCH);
+            softReset();
             Thread.sleep(2);
-            int[] readings = I2cDataReader.readData(smBus, SHT3X_READINGS_DATA_LENGTH);
-            Log.infof("SHT3x row readings: %s", StringUtil.toHexString(readings));
+            var i2CInterface = i2C(sht3xModuleAddress, i2C0Bus);
+            writeCommand(i2CInterface, COMMAND_SINGLE_SHOT_HIGH_REPEAT_WITH_CLOCK_STRETCH);
+            Thread.sleep(2);
+            byte[] readings = I2cDataReader.readData(i2CInterface, SHT3X_READINGS_DATA_LENGTH);
+            Log.infof("SHT3x raw readings: %s", StringUtil.toHexString(readings));
             return toSht3xReadings(readings);
         } catch (Exception e) {
-            throw new SensorException(E_SHT3X_0001.getId(), SensorType.TEMP_HUMID, SensorName.SHT3x,
-                    E_SHT3X_0001.getName(), e);
+            throw new SensorException(E_SHT3X_0001.getId(), TEMP_HUMID, SHT3x, E_SHT3X_0001.getName(), e);
         }
     }
 
-    public Sht3xReadings toSht3xReadings(int[] readings) {
-        int rawTemperature = readings[0] << 8 | readings[1];
-        int rawHumidity = readings[3] << 8 | readings[4];
+    @Loggable(logReturnVal = true)
+    @Override
+    public StatusRegister readStatus() {
+        try {
+            var i2CInterface = i2C(sht3xModuleAddress, i2C0Bus);
+            writeCommand(i2CInterface, COMMAND_READ_STATUS_REGISTER);
+            Thread.sleep(2);
+            byte[] status = I2cDataReader.readData(i2CInterface, SHT3X_STATUS_DATA_LENGTH);
+            Log.infof("SHT3x raw status: %s", StringUtil.toHexString(status));
+            return StatusRegister.fromRawData(status);
+        } catch (Exception e) {
+            throw new SensorException(E_SHT3X_0001.getId(), TEMP_HUMID, SHT3x, E_SHT3X_0001.getName(), e);
+        }
+    }
+
+    public Sht3xReadings toSht3xReadings(byte[] readings) {
+        int rawTemperature = RawDataConvertor.toUnsignedInt(Arrays.copyOfRange(readings, 0, 2));
+        int rawHumidity = RawDataConvertor.toUnsignedInt(Arrays.copyOfRange(readings, 3, 5));
         return new Sht3xReadings(
                 175.0 * rawTemperature / 65535 - 45,
                 100.0 * rawHumidity / 65535
@@ -94,14 +101,13 @@ public class Sht3xAdapter implements Sht3xSpec {
         try {
             boolean result = true;
             switch (heaterState) {
-                case ON -> writeCommand(smBus, COMMAND_HEATER_ENABLE);
-                case OFF -> writeCommand(smBus, COMMAND_HEATER_DISABLE);
+                case ON -> writeCommand(i2C(sht3xModuleAddress, i2C0Bus), COMMAND_HEATER_ENABLE);
+                case OFF -> writeCommand(i2C(sht3xModuleAddress, i2C0Bus), COMMAND_HEATER_DISABLE);
                 default -> result = false;
             }
             return result;
         } catch (Exception e) {
-            throw new SensorException(E_SHT3X_0002.getId(), SensorType.TEMP_HUMID, SensorName.SHT3x,
-                    E_SHT3X_0002.getName(), e);
+            throw new SensorException(E_SHT3X_0002.getId(), TEMP_HUMID, SHT3x, E_SHT3X_0002.getName(), e);
         }
     }
 }

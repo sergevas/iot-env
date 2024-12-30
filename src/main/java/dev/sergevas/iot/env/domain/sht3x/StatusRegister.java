@@ -87,28 +87,34 @@ public class StatusRegister {
         };
     }
 
-    public static StatusRegister fromRawData(int[] statusRegisterReadings) {
-        var rowData = statusRegisterReadings[0] << 8 | statusRegisterReadings[1];
+    public static StatusRegister fromRawData(byte[] statusRegisterReadings) {
         return new StatusRegister(
-                (byte) (0x01 & rowData),
-                (byte) ((0x02 & rowData) >> 1),
-                (byte) ((0x10 & rowData) >> 4),
-                (byte) ((0x400 & rowData) >> 10),
-                (byte) ((0x800 & rowData) >> 11),
-                (byte) ((0x2000 & rowData) >> 13),
-                (byte) ((0x8000 & rowData) >> 15));
+                (byte) (0x01 & statusRegisterReadings[1]),
+                (byte) ((0x02 & statusRegisterReadings[1]) >> 1),
+                (byte) ((0x10 & statusRegisterReadings[1]) >> 4),
+                (byte) ((0x04 & statusRegisterReadings[0]) >> 2),
+                (byte) ((0x08 & statusRegisterReadings[0]) >> 3),
+                (byte) ((0x20 & statusRegisterReadings[0]) >> 5),
+                (byte) ((0x80 & statusRegisterReadings[0]) >> 7));
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         StatusRegister that = (StatusRegister) o;
-        return writeDataChecksumStatus == that.writeDataChecksumStatus && commandStatus == that.commandStatus && systemResetDetected == that.systemResetDetected && tTrackingAlert == that.tTrackingAlert && rhTrackingAlert == that.rhTrackingAlert && heaterStatus == that.heaterStatus && alertPendingStatus == that.alertPendingStatus;
+        return writeDataChecksumStatus == that.writeDataChecksumStatus
+                && commandStatus == that.commandStatus
+                && systemResetDetected == that.systemResetDetected
+                && tTrackingAlert == that.tTrackingAlert
+                && rhTrackingAlert == that.rhTrackingAlert
+                && heaterStatus == that.heaterStatus
+                && alertPendingStatus == that.alertPendingStatus;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(writeDataChecksumStatus, commandStatus, systemResetDetected, tTrackingAlert, rhTrackingAlert, heaterStatus, alertPendingStatus);
+        return Objects.hash(writeDataChecksumStatus, commandStatus, systemResetDetected, tTrackingAlert,
+                rhTrackingAlert, heaterStatus, alertPendingStatus);
     }
 
     @Override

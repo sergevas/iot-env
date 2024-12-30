@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class StatusRegisterTest {
+class SensorStatusRegisterTest {
 
     @Test
     void fromRawData() {
@@ -17,7 +17,7 @@ class StatusRegisterTest {
                 (byte) 1,
                 (byte) 0
         );
-        var actual = StatusRegister.fromRawData(new int[]{0b01101010, 0b10110000});
+        var actual = StatusRegister.fromRawData(new byte[]{0b01101010, (byte) 0b10110000});
         assertEquals(expected, actual);
     }
 

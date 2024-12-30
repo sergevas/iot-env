@@ -8,7 +8,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 @DefaultBean
 public class Bh1750AdapterMock implements LightIntensityReader {
 
-
     @Override
     public double readLightIntensity() {
         return 567.89;
