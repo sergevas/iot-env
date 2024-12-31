@@ -13,4 +13,6 @@ public interface Sht3xSpec {
     Sht3xReadings readTemperatureAndHumidity();
 
     StatusRegister readStatus();
+
+    StatusRegister clearStatus();
 }

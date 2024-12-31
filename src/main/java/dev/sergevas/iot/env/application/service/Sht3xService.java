@@ -27,9 +27,21 @@ public class Sht3xService implements Sht3xUseCase {
         return sht3xSpec.readStatus();
     }
 
+    @Loggable
+    @Override
+    public StatusRegister clearStatus() {
+        return sht3xSpec.clearStatus();
+    }
+
     @Loggable(logArguments = true)
     @Override
     public boolean updateHeaterState(HeaterState heaterState) {
         return sht3xSpec.updateHeater(heaterState);
+    }
+
+    @Loggable
+    @Override
+    public void reset() {
+        sht3xSpec.softReset();
     }
 }

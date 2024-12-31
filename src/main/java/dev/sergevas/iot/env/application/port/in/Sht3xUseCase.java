@@ -10,7 +10,9 @@ public interface Sht3xUseCase {
 
     StatusRegister getStatus();
 
+    StatusRegister clearStatus();
+
     boolean updateHeaterState(HeaterState heaterState);
 
-
+    void reset();
 }

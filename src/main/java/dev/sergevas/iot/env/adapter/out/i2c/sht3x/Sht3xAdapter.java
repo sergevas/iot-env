@@ -1,7 +1,6 @@
 package dev.sergevas.iot.env.adapter.out.i2c.sht3x;
 
 import dev.sergevas.iot.env.adapter.out.i2c.I2cDataReader;
-import dev.sergevas.iot.env.adapter.out.i2c.RawDataConvertor;
 import dev.sergevas.iot.env.application.port.out.SensorException;
 import dev.sergevas.iot.env.application.port.out.Sht3xSpec;
 import dev.sergevas.iot.env.application.service.StringUtil;
@@ -16,14 +15,15 @@ import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import java.util.Arrays;
-
 import static dev.sergevas.iot.env.adapter.out.i2c.I2CInterfaceProvider.i2C;
 import static dev.sergevas.iot.env.adapter.out.i2c.I2cCommandWriter.writeCommand;
+import static dev.sergevas.iot.env.adapter.out.i2c.RawDataConvertor.toUnsignedInt;
 import static dev.sergevas.iot.env.domain.ErrorEvent.E_SHT3X_0001;
 import static dev.sergevas.iot.env.domain.ErrorEvent.E_SHT3X_0002;
 import static dev.sergevas.iot.env.domain.SensorName.SHT3x;
 import static dev.sergevas.iot.env.domain.SensorType.TEMP_HUMID;
+import static java.lang.Thread.sleep;
+import static java.util.Arrays.copyOfRange;
 
 @ApplicationScoped
 @IfBuildProfile("prod")
@@ -35,6 +35,7 @@ public class Sht3xAdapter implements Sht3xSpec {
     public static final int COMMAND_HEATER_ENABLE = 0x306D;
     public static final int COMMAND_HEATER_DISABLE = 0x3066;
     public static final int COMMAND_READ_STATUS_REGISTER = 0xF32D;
+    public static final int COMMAND_CLEAR_STATUS_REGISTER = 0x3041;
     public static final int SHT3X_READINGS_DATA_LENGTH = 6;
     public static final int SHT3X_STATUS_DATA_LENGTH = 3;
 
@@ -58,11 +59,10 @@ public class Sht3xAdapter implements Sht3xSpec {
     @Override
     public Sht3xReadings readTemperatureAndHumidity() {
         try {
-            softReset();
-            Thread.sleep(2);
+            sleep(2);
             var i2CInterface = i2C(sht3xModuleAddress, i2C0Bus);
             writeCommand(i2CInterface, COMMAND_SINGLE_SHOT_HIGH_REPEAT_WITH_CLOCK_STRETCH);
-            Thread.sleep(2);
+            sleep(2);
             byte[] readings = I2cDataReader.readData(i2CInterface, SHT3X_READINGS_DATA_LENGTH);
             Log.infof("SHT3x raw readings: %s", StringUtil.toHexString(readings));
             return toSht3xReadings(readings);
@@ -77,7 +77,7 @@ public class Sht3xAdapter implements Sht3xSpec {
         try {
             var i2CInterface = i2C(sht3xModuleAddress, i2C0Bus);
             writeCommand(i2CInterface, COMMAND_READ_STATUS_REGISTER);
-            Thread.sleep(2);
+            sleep(2);
             byte[] status = I2cDataReader.readData(i2CInterface, SHT3X_STATUS_DATA_LENGTH);
             Log.infof("SHT3x raw status: %s", StringUtil.toHexString(status));
             return StatusRegister.fromRawData(status);
@@ -86,9 +86,22 @@ public class Sht3xAdapter implements Sht3xSpec {
         }
     }
 
+    @Loggable(logReturnVal = true)
+    @Override
+    public StatusRegister clearStatus() {
+        try {
+            var i2CInterface = i2C(sht3xModuleAddress, i2C0Bus);
+            writeCommand(i2CInterface, COMMAND_CLEAR_STATUS_REGISTER);
+            sleep(2);
+            return readStatus();
+        } catch (Exception e) {
+            throw new SensorException(E_SHT3X_0002.getId(), TEMP_HUMID, SHT3x, E_SHT3X_0002.getName(), e);
+        }
+    }
+
     public Sht3xReadings toSht3xReadings(byte[] readings) {
-        int rawTemperature = RawDataConvertor.toUnsignedInt(Arrays.copyOfRange(readings, 0, 2));
-        int rawHumidity = RawDataConvertor.toUnsignedInt(Arrays.copyOfRange(readings, 3, 5));
+        int rawTemperature = toUnsignedInt(copyOfRange(readings, 0, 2));
+        int rawHumidity = toUnsignedInt(copyOfRange(readings, 3, 5));
         return new Sht3xReadings(
                 175.0 * rawTemperature / 65535 - 45,
                 100.0 * rawHumidity / 65535

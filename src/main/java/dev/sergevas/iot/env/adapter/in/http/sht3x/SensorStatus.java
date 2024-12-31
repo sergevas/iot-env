@@ -1,5 +1,6 @@
 package dev.sergevas.iot.env.adapter.in.http.sht3x;
 
+import dev.sergevas.iot.env.domain.sht3x.StatusRegister;
 import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.validation.Valid;
 
@@ -116,5 +117,16 @@ public class SensorStatus {
                 .add("heaterStatus='" + heaterStatus + "'")
                 .add("alertPendingStatus='" + alertPendingStatus + "'")
                 .toString();
+    }
+
+    public static SensorStatus toSensorStatus(StatusRegister statusRegister) {
+        return new SensorStatus()
+                .writeDataChecksumStatus(statusRegister.writeDataChecksumStatus())
+                .commandStatus(statusRegister.commandStatus())
+                .systemResetDetected(statusRegister.systemResetDetected())
+                .tTrackingAlert(statusRegister.tTrackingAlert())
+                .rhTrackingAlert(statusRegister.rhTrackingAlert())
+                .heaterStatus(statusRegister.heaterStatus())
+                .alertPendingStatus(statusRegister.alertPendingStatus());
     }
 }

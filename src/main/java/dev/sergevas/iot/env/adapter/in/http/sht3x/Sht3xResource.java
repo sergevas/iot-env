@@ -10,6 +10,7 @@ import dev.sergevas.iot.env.infra.log.interceptor.Loggable;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -43,15 +44,15 @@ public class Sht3xResource {
     @Path("/status")
     @Produces(MediaType.APPLICATION_JSON)
     public SensorStatus getStatus() {
-        var statusRegister = sht3xUseCase.getStatus();
-        return new SensorStatus()
-                .writeDataChecksumStatus(statusRegister.writeDataChecksumStatus())
-                .commandStatus(statusRegister.commandStatus())
-                .systemResetDetected(statusRegister.systemResetDetected())
-                .tTrackingAlert(statusRegister.tTrackingAlert())
-                .rhTrackingAlert(statusRegister.rhTrackingAlert())
-                .heaterStatus(statusRegister.heaterStatus())
-                .alertPendingStatus(statusRegister.alertPendingStatus());
+        return SensorStatus.toSensorStatus(sht3xUseCase.getStatus());
+    }
+
+    @Loggable(logReturnVal = true)
+    @PUT
+    @Path("/status")
+    @Produces(MediaType.APPLICATION_JSON)
+    public SensorStatus clearStatus() {
+        return SensorStatus.toSensorStatus(sht3xUseCase.clearStatus());
     }
 
     @Loggable(logReturnVal = true)
@@ -62,5 +63,14 @@ public class Sht3xResource {
     public HeaterUpdateResult updateHeaterState(HeaterNewState heaterNewState) {
         return new HeaterUpdateResult(sht3xUseCase
                 .updateHeaterState(HeaterState.valueOf(heaterNewState.state().name())));
+    }
+
+    @Loggable(logReturnVal = true)
+    @PUT
+    @Path("/reset")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response reset() {
+        sht3xUseCase.reset();
+        return Response.ok().build();
     }
 }
