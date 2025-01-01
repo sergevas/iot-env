@@ -3,7 +3,7 @@ package dev.sergevas.iot.env.adapter.out.i2c.sht3x;
 import dev.sergevas.iot.env.adapter.out.i2c.I2cDataReader;
 import dev.sergevas.iot.env.application.port.out.SensorException;
 import dev.sergevas.iot.env.application.port.out.Sht3xSpec;
-import dev.sergevas.iot.env.application.service.StringUtil;
+import dev.sergevas.iot.env.application.service.shared.StringUtil;
 import dev.sergevas.iot.env.domain.sht3x.HeaterState;
 import dev.sergevas.iot.env.domain.sht3x.Sht3xReadings;
 import dev.sergevas.iot.env.domain.sht3x.StatusRegister;
@@ -18,6 +18,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import static dev.sergevas.iot.env.adapter.out.i2c.I2CInterfaceProvider.i2C;
 import static dev.sergevas.iot.env.adapter.out.i2c.I2cCommandWriter.writeCommand;
 import static dev.sergevas.iot.env.adapter.out.i2c.RawDataConvertor.toUnsignedInt;
+import static dev.sergevas.iot.env.adapter.out.i2c.sht3x.CrcValidator.warnIfNotValid;
 import static dev.sergevas.iot.env.domain.ErrorEvent.E_SHT3X_0001;
 import static dev.sergevas.iot.env.domain.ErrorEvent.E_SHT3X_0002;
 import static dev.sergevas.iot.env.domain.SensorName.SHT3x;
@@ -80,6 +81,7 @@ public class Sht3xAdapter implements Sht3xSpec {
             sleep(2);
             byte[] status = I2cDataReader.readData(i2CInterface, SHT3X_STATUS_DATA_LENGTH);
             Log.infof("SHT3x raw status: %s", StringUtil.toHexString(status));
+            warnIfNotValid(copyOfRange(status, 0, 2), status[2]);
             return StatusRegister.fromRawData(status);
         } catch (Exception e) {
             throw new SensorException(E_SHT3X_0001.getId(), TEMP_HUMID, SHT3x, E_SHT3X_0001.getName(), e);
@@ -100,11 +102,13 @@ public class Sht3xAdapter implements Sht3xSpec {
     }
 
     public Sht3xReadings toSht3xReadings(byte[] readings) {
-        int rawTemperature = toUnsignedInt(copyOfRange(readings, 0, 2));
-        int rawHumidity = toUnsignedInt(copyOfRange(readings, 3, 5));
+        byte[] tempReadings = copyOfRange(readings, 0, 2);
+        warnIfNotValid(tempReadings, readings[2]);
+        byte[] humidReadings = copyOfRange(readings, 3, 5);
+        warnIfNotValid(humidReadings, readings[5]);
         return new Sht3xReadings(
-                175.0 * rawTemperature / 65535 - 45,
-                100.0 * rawHumidity / 65535
+                175.0 * toUnsignedInt(tempReadings) / 65535 - 45,
+                100.0 * toUnsignedInt(humidReadings) / 65535
         );
     }
 

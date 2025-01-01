@@ -4,7 +4,7 @@ import dev.sergevas.iot.env.adapter.out.i2c.I2cDataReader;
 import dev.sergevas.iot.env.adapter.out.i2c.RawDataConvertor;
 import dev.sergevas.iot.env.application.port.out.LightIntensityReader;
 import dev.sergevas.iot.env.application.port.out.SensorException;
-import dev.sergevas.iot.env.application.service.StringUtil;
+import dev.sergevas.iot.env.application.service.shared.StringUtil;
 import dev.sergevas.iot.env.domain.ErrorEvent;
 import dev.sergevas.iot.env.domain.SensorName;
 import dev.sergevas.iot.env.domain.SensorType;
@@ -25,7 +25,7 @@ public class Bh1750Adapter implements LightIntensityReader {
 
     public static final byte GY_302_BH1750_POWER_DOWN = 0x00;
     public static final byte GY_302_BH1750_POWER_ON = 0x01;
-    public static final byte GY_302_BH1750_ONE_TIME_H_RESOLUTION_MODE = (byte) 0x20;
+    public static final byte GY_302_BH1750_ONE_TIME_H_RESOLUTION_MODE = 0x20;
     public static final int GY_302_BH1750_READINGS_DATA_LENGTH = 2;
 
     @I2C(name = "i2c0")

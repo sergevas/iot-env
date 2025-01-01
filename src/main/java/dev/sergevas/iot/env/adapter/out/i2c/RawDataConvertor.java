@@ -4,8 +4,8 @@ public class RawDataConvertor {
 
     public static int toUnsignedInt(byte[] data) {
         int result = 0;
-        for (int i = 0; i < data.length; i++) {
-            result = (result << 8) | Byte.toUnsignedInt(data[i]);
+        for (byte datum : data) {
+            result = (result << 8) | Byte.toUnsignedInt(datum);
         }
         return result;
     }

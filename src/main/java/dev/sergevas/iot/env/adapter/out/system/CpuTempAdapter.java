@@ -2,7 +2,7 @@ package dev.sergevas.iot.env.adapter.out.system;
 
 import dev.sergevas.iot.env.application.port.out.SensorException;
 import dev.sergevas.iot.env.application.port.out.health.CpuTempFetcher;
-import dev.sergevas.iot.env.application.service.Profiler;
+import dev.sergevas.iot.env.application.service.shared.Profiler;
 import dev.sergevas.iot.env.domain.SensorName;
 import dev.sergevas.iot.env.domain.SensorType;
 import io.quarkus.arc.profile.IfBuildProfile;

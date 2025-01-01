@@ -1,7 +1,7 @@
 package dev.sergevas.iot.env.adapter.in.http;
 
 import dev.sergevas.iot.env.application.port.out.SensorException;
-import dev.sergevas.iot.env.application.service.ExceptionUtils;
+import dev.sergevas.iot.env.application.service.shared.ExceptionUtils;
 import dev.sergevas.iot.env.domain.SensorErrorType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;

@@ -1,4 +1,4 @@
-package dev.sergevas.iot.env.application.service;
+package dev.sergevas.iot.env.application.service.shared;
 
 import org.junit.jupiter.api.Test;
 
