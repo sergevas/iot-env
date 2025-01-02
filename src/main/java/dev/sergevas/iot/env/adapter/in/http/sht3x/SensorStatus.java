@@ -1,7 +1,6 @@
 package dev.sergevas.iot.env.adapter.in.http.sht3x;
 
 import dev.sergevas.iot.env.domain.sht3x.StatusRegister;
-import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.validation.Valid;
 
 import java.util.Objects;
@@ -22,7 +21,6 @@ public class SensorStatus {
         return this;
     }
 
-    @JsonbProperty("write_data_checksum_status")
     public String getWriteDataChecksumStatus() {
         return writeDataChecksumStatus;
     }
@@ -32,7 +30,6 @@ public class SensorStatus {
         return this;
     }
 
-    @JsonbProperty("command_status")
     public String getCommandStatus() {
         return commandStatus;
     }
@@ -42,7 +39,6 @@ public class SensorStatus {
         return this;
     }
 
-    @JsonbProperty("system_reset_detected")
     public String getSystemResetDetected() {
         return systemResetDetected;
     }
@@ -52,7 +48,6 @@ public class SensorStatus {
         return this;
     }
 
-    @JsonbProperty("t_tracking_alert")
     public String getTTrackingAlert() {
         return tTrackingAlert;
     }
@@ -62,7 +57,6 @@ public class SensorStatus {
         return this;
     }
 
-    @JsonbProperty("rh_tracking_alert")
     public String getRhTrackingAlert() {
         return rhTrackingAlert;
     }
@@ -72,7 +66,6 @@ public class SensorStatus {
         return this;
     }
 
-    @JsonbProperty("heater_status")
     public String getHeaterStatus() {
         return heaterStatus;
     }
@@ -82,7 +75,6 @@ public class SensorStatus {
         return this;
     }
 
-    @JsonbProperty("alert_pending_status")
     public String getAlertPendingStatus() {
         return alertPendingStatus;
     }

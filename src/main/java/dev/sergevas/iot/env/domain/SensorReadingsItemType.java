@@ -1,6 +1,5 @@
 package dev.sergevas.iot.env.domain;
 
-import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 
@@ -9,7 +8,7 @@ import java.util.Objects;
 import java.util.StringJoiner;
 
 /**
- * A structure, containing the BME280 sensor data readings, e.g. temperature, humidity, pressure, etc.
+ * A structure, containing the environmental sensor data readings, e.g. temperature, humidity, pressure, etc.
  **/
 
 public class SensorReadingsItemType {
@@ -27,13 +26,10 @@ public class SensorReadingsItemType {
         return this;
     }
 
-
-    @JsonbProperty("s_type")
     public String getsType() {
         return sType;
     }
 
-    @JsonbProperty("s_type")
     public void setsType(String sType) {
         this.sType = sType;
     }
@@ -46,13 +42,10 @@ public class SensorReadingsItemType {
         return this;
     }
 
-
-    @JsonbProperty("s_id")
     public String getsId() {
         return sId;
     }
 
-    @JsonbProperty("s_id")
     public void setsId(String sId) {
         this.sId = sId;
     }
@@ -65,13 +58,10 @@ public class SensorReadingsItemType {
         return this;
     }
 
-
-    @JsonbProperty("s_name")
     public String getsName() {
         return sName;
     }
 
-    @JsonbProperty("s_name")
     public void setsName(String sName) {
         this.sName = sName;
     }
@@ -84,14 +74,11 @@ public class SensorReadingsItemType {
         return this;
     }
 
-
-    @JsonbProperty("s_data")
     @NotNull
     public String getsData() {
         return sData;
     }
 
-    @JsonbProperty("s_data")
     public void setsData(String sData) {
         this.sData = sData;
     }
@@ -104,14 +91,11 @@ public class SensorReadingsItemType {
         return this;
     }
 
-
-    @JsonbProperty("s_timestamp")
     @NotNull
     public OffsetDateTime getsTimestamp() {
         return sTimestamp;
     }
 
-    @JsonbProperty("s_timestamp")
     public void setsTimestamp(OffsetDateTime sTimestamp) {
         this.sTimestamp = sTimestamp;
     }
