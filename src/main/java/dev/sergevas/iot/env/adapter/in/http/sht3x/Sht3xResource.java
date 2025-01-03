@@ -43,16 +43,16 @@ public class Sht3xResource {
     @GET
     @Path("/status")
     @Produces(MediaType.APPLICATION_JSON)
-    public SensorStatus getStatus() {
-        return SensorStatus.toSensorStatus(sht3xUseCase.getStatus());
+    public Sht3xStatus getStatus() {
+        return Sht3xStatus.toSensorStatus(sht3xUseCase.getStatus());
     }
 
     @Loggable(logReturnVal = true)
     @PUT
     @Path("/status")
     @Produces(MediaType.APPLICATION_JSON)
-    public SensorStatus clearStatus() {
-        return SensorStatus.toSensorStatus(sht3xUseCase.clearStatus());
+    public Sht3xStatus clearStatus() {
+        return Sht3xStatus.toSensorStatus(sht3xUseCase.clearStatus());
     }
 
     @Loggable(logReturnVal = true)

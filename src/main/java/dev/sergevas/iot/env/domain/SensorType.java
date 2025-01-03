@@ -6,6 +6,7 @@ public enum SensorType {
     PRESS,
     LIGHT,
     TEMP_HUMID,
+    TEMP_PRESS,
     CPU_TEMP,
     DISK_SPACE;
 }

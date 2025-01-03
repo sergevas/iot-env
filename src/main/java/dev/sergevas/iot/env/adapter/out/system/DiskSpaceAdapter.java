@@ -6,6 +6,7 @@ import dev.sergevas.iot.env.application.port.out.health.DiskSpaceFetcher;
 import dev.sergevas.iot.env.domain.SensorName;
 import dev.sergevas.iot.env.domain.SensorType;
 import dev.sergevas.iot.env.domain.health.DiskSpace;
+import dev.sergevas.iot.env.infra.log.interceptor.Loggable;
 import io.quarkus.logging.Log;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -33,7 +34,7 @@ public class DiskSpaceAdapter implements DiskSpaceFetcher {
     @PostConstruct
     public void init() {
         try {
-            this.fileStore = Files.getFileStore(Paths.get(diskSpacePath));
+            fileStore = Files.getFileStore(Paths.get(diskSpacePath));
         } catch (IOException ioe) {
             String errorMsgFormatted = "Unable to get FileStore located at %s";
             Log.errorf(ioe, errorMsgFormatted, diskSpacePath);
@@ -41,14 +42,13 @@ public class DiskSpaceAdapter implements DiskSpaceFetcher {
         }
     }
 
+    @Loggable(logReturnVal = true)
     @Override
     public DiskSpace getDiskSpace() {
         try {
             return new DiskSpace(fileStore.getUsableSpace(), fileStore.getTotalSpace());
         } catch (IOException ioe) {
-            Log.error(ioe);
-            Log.error("Unable to get DiskSpace ", ioe);
-            throw new SensorException(E_SYSTEM_0002.getId(), SensorType.DISK_SPACE, SensorName.ORANGE_PI_ZERO, E_SYSTEM_0002.getName(), ioe);
+            throw new SensorException(E_SYSTEM_0002.getId(), SensorType.DISK_SPACE, SensorName.RASPBERRY_PI_ZERO_2, E_SYSTEM_0002.getName(), ioe);
         }
     }
 }

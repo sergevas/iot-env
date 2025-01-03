@@ -6,7 +6,7 @@ import jakarta.validation.Valid;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-public class SensorStatus {
+public class Sht3xStatus {
 
     private @Valid String writeDataChecksumStatus;
     private @Valid String commandStatus;
@@ -16,7 +16,7 @@ public class SensorStatus {
     private @Valid String heaterStatus;
     private @Valid String alertPendingStatus;
 
-    public SensorStatus writeDataChecksumStatus(String writeDataChecksumStatus) {
+    public Sht3xStatus writeDataChecksumStatus(String writeDataChecksumStatus) {
         this.writeDataChecksumStatus = writeDataChecksumStatus;
         return this;
     }
@@ -25,7 +25,7 @@ public class SensorStatus {
         return writeDataChecksumStatus;
     }
 
-    public SensorStatus commandStatus(String commandStatus) {
+    public Sht3xStatus commandStatus(String commandStatus) {
         this.commandStatus = commandStatus;
         return this;
     }
@@ -34,7 +34,7 @@ public class SensorStatus {
         return commandStatus;
     }
 
-    public SensorStatus systemResetDetected(String systemResetDetected) {
+    public Sht3xStatus systemResetDetected(String systemResetDetected) {
         this.systemResetDetected = systemResetDetected;
         return this;
     }
@@ -43,16 +43,16 @@ public class SensorStatus {
         return systemResetDetected;
     }
 
-    public SensorStatus tTrackingAlert(String tTrackingAlert) {
+    public Sht3xStatus tTrackingAlert(String tTrackingAlert) {
         this.tTrackingAlert = tTrackingAlert;
         return this;
     }
 
-    public String getTTrackingAlert() {
+    public String gettTrackingAlert() {
         return tTrackingAlert;
     }
 
-    public SensorStatus rhTrackingAlert(String rhTrackingAlert) {
+    public Sht3xStatus rhTrackingAlert(String rhTrackingAlert) {
         this.rhTrackingAlert = rhTrackingAlert;
         return this;
     }
@@ -61,7 +61,7 @@ public class SensorStatus {
         return rhTrackingAlert;
     }
 
-    public SensorStatus heaterStatus(String heaterStatus) {
+    public Sht3xStatus heaterStatus(String heaterStatus) {
         this.heaterStatus = heaterStatus;
         return this;
     }
@@ -70,7 +70,7 @@ public class SensorStatus {
         return heaterStatus;
     }
 
-    public SensorStatus alertPendingStatus(String alertPendingStatus) {
+    public Sht3xStatus alertPendingStatus(String alertPendingStatus) {
         this.alertPendingStatus = alertPendingStatus;
         return this;
     }
@@ -82,14 +82,14 @@ public class SensorStatus {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        SensorStatus sensorStatus = (SensorStatus) o;
-        return Objects.equals(writeDataChecksumStatus, sensorStatus.writeDataChecksumStatus)
-                && Objects.equals(commandStatus, sensorStatus.commandStatus)
-                && Objects.equals(systemResetDetected, sensorStatus.systemResetDetected)
-                && Objects.equals(tTrackingAlert, sensorStatus.tTrackingAlert)
-                && Objects.equals(rhTrackingAlert, sensorStatus.rhTrackingAlert)
-                && Objects.equals(heaterStatus, sensorStatus.heaterStatus)
-                && Objects.equals(alertPendingStatus, sensorStatus.alertPendingStatus);
+        Sht3xStatus sht3xStatus = (Sht3xStatus) o;
+        return Objects.equals(writeDataChecksumStatus, sht3xStatus.writeDataChecksumStatus)
+                && Objects.equals(commandStatus, sht3xStatus.commandStatus)
+                && Objects.equals(systemResetDetected, sht3xStatus.systemResetDetected)
+                && Objects.equals(tTrackingAlert, sht3xStatus.tTrackingAlert)
+                && Objects.equals(rhTrackingAlert, sht3xStatus.rhTrackingAlert)
+                && Objects.equals(heaterStatus, sht3xStatus.heaterStatus)
+                && Objects.equals(alertPendingStatus, sht3xStatus.alertPendingStatus);
     }
 
     @Override
@@ -100,7 +100,7 @@ public class SensorStatus {
 
     @Override
     public String toString() {
-        return new StringJoiner(", ", SensorStatus.class.getSimpleName() + "[", "]")
+        return new StringJoiner(", ", Sht3xStatus.class.getSimpleName() + "[", "]")
                 .add("writeDataChecksumStatus='" + writeDataChecksumStatus + "'")
                 .add("commandStatus='" + commandStatus + "'")
                 .add("systemResetDetected='" + systemResetDetected + "'")
@@ -111,8 +111,8 @@ public class SensorStatus {
                 .toString();
     }
 
-    public static SensorStatus toSensorStatus(StatusRegister statusRegister) {
-        return new SensorStatus()
+    public static Sht3xStatus toSensorStatus(StatusRegister statusRegister) {
+        return new Sht3xStatus()
                 .writeDataChecksumStatus(statusRegister.writeDataChecksumStatus())
                 .commandStatus(statusRegister.commandStatus())
                 .systemResetDetected(statusRegister.systemResetDetected())

@@ -2,6 +2,7 @@ package dev.sergevas.iot.env.adapter.out.system;
 
 import dev.sergevas.iot.env.application.port.out.health.HeapMemoryFetcher;
 import dev.sergevas.iot.env.domain.health.HeapMemory;
+import dev.sergevas.iot.env.infra.log.interceptor.Loggable;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -20,6 +21,7 @@ public class HeapMemoryAdapter implements HeapMemoryFetcher {
         rt = Runtime.getRuntime();
     }
 
+    @Loggable(logReturnVal = true)
     @Override
     public HeapMemory getHeapMemory() {
         return new HeapMemory(rt.freeMemory(), rt.totalMemory(), rt.maxMemory());

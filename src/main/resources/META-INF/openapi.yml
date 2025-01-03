@@ -18,174 +18,141 @@ paths:
       This resource allows to obtain light intensity readings
       from the BH1750 ambient light intensity sensor
     get:
-      tags: [ ]
+      operationId: GetBH1750AmbientLightIntensity
+      summary: Get BH1750 ambient light intensity readings
+      description: Can be used to get readings from BH1750 ambient light intensity sensor
+      tags: [ bh1750 ]
       responses:
         '200':
+          description: The BH1750 ambient light intensity sensor readings
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SensorReadingsItemType'
               examples:
                 BH1750AmbientLightIntensityReadingsExample1:
-                  value:
-                    sType: LIGHT
-                    sName: 'BH1750'
-                    sData: '1.67'
-                    sTimestamp: '2021-08-22T22:44:20.369467Z'
-          description: The BH1750 ambient light intensity sensor readings
+                  $ref: '#/components/examples/BH1750AmbientLightIntensityReadingsExample1'
         '500':
           $ref: '#/components/responses/BH1750SensorError'
-      operationId: GetBH1750AmbientLightIntensity
-      summary: Get BH1750 ambient light intensity readings
-      description: Can be used to get readings from BH1750 ambient light intensity sensor
+  /sensors/sht3x/readings:
+    summary: The SHT3x humidity and temperature sensor readings
+    description: |-
+      This resource allows to obtain humidity and temperature readings from the SHT3x environmental sensor
+    get:
+      tags: [ sht3x ]
+      operationId: GetSHT3xHumidTemp
+      summary: Get SHT3x humidity and temperature readings
+      description: Can be used to get readings from SHT3x humidity and temperature sensor
+      responses:
+        '200':
+          description: |
+            The collection of humidity and temperature readings,
+            obtained from the SHT3x environmental data sensor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SensorReadingsType'
+              examples:
+                SHT3xHumidityTemperatureReadingsExample1:
+                  $ref: '#/components/examples/SHT3xHumidityTemperatureReadingsExample1'
+        '500':
+          $ref: '#/components/responses/SHT3xSensorError1'
+  /sensors/sht3x/reset:
+    summary: Sends soft reset command to the SHT3x
+    description: |-
+      The resource allows to send soft reset command to the SHT3x.
+      This triggers the sensor to reset its system controller and reloads calibration data
+      from the memory.
+    put:
+      tags: [ sht3x ]
+      operationId: ResetSHT3x
+      summary: Send soft reset command to the SHT3x
+      description: Triggers the sensor to reset its system controller and reloads calibration data
+      responses:
+        '200':
+          description: Reset completed successfully
+        '500':
+          $ref: '#/components/responses/SHT3xSensorError2'
+  /sensors/sht3x/status:
+    summary: The SHT3x status register data
+    description: |-
+      This resource provides access to SHT3x status register
+    get:
+      tags: [ sht3x ]
+      operationId: GetSHT3xStatus
+      summary: Get SHT3x status register content
+      description: Can be used to get current content of the SHT3x status register
+      responses:
+        '200':
+          description: |
+            Current content of the SHT3x status register
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Sht3xStatusType'
+              examples:
+                Sht3xStatusTypeExample1:
+                  $ref: '#/components/examples/Sht3xStatusTypeExample1'
+        '500':
+          $ref: '#/components/responses/SHT3xSensorError1'
+    put:
+      tags: [ sht3x ]
+      operationId: ClearSHT3xStatus
+      summary: Clears SHT3x status register
+      description: |
+        Can be used to clear all of the SHT3x status register flags
+      responses:
+        '200':
+          description: Status register cleared successfully
+        '500':
+          $ref: '#/components/responses/SHT3xSensorError2'
   /sensors/bmp180:
     summary: The BMP180 barometric air pressure and temperature sensor readings
     description: |-
       This resource allows to obtain barometric air pressure and temperature readings from the BMP180 sensor
     get:
-      tags: [ ]
+      tags: [ bmp180 ]
+      operationId: GetBMP180TempPress
+      summary: Get BMP180 temperature and pressure readings
+      description: Can be used to get readings from BMP180 pressure sensor
       responses:
         '200':
+          description: |
+            The collection of temperature and pressure readings, obtained from
+            the BMP180 environmental data sensor
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/SensorReadingsItemType'
               examples:
                 BMP180TemperaturePressureReadingsExample1:
-                  value:
-                    sReadings:
-                      - sId: '55'
-                        sType: TEMP
-                        sName: 'BMP180'
-                        sData: '25.089'
-                        sTimestamp: '2021-09-20T19:34:10.119467Z'
-                      - sId: '55'
-                        sType: PRESS
-                        sName: 'BMP180'
-                        sData: '69964'
-                        sTimestamp: '2021-09-20T19:34:10.119467Z'
-          description: |
-            The collection of temperature and pressure readings, obtained from
-            the BMP180 environmental data sensor
+                  $ref: '#/components/examples/BMP180TemperaturePressureReadingsExample1'
         '500':
-          $ref: '#/components/responses/sensorError'
-      operationId: GetBMP180TempPress
-      summary: Get BMP180 temperature and pressure readings
-      description: Can be used to get readings from BMP180 pressure sensor
-  /sensors/sht3x/readings:
-    summary: The SHT3x humidity and temperature sensor readings
+          $ref: '#/components/responses/BMP180SensorError1'
+  /health:
+    summary: 'Provides health information of the runtime, e.g. CPU temperature, free memory, etc.'
     description: |-
-      This resource allows to obtain humidity and temperature readings from the SHT3x environmental sensor
-    get:
-      tags: [ ]
-      operationId: GetSHT3xHumidTemp
-      summary: Get SHT3x humidity and temperature readings
-      description: Can be used to get readings from SHT3x humidity and temperature sensor
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SensorReadingsItemType'
-              examples:
-                SHT3xHumidityTemperatureReadingsExample1:
-                  value:
-                    sReadings:
-                      - sType: HUMID
-                        sName: 'SHT3x'
-                        sData: '75.7'
-                        sTimestamp: '2021-10-08T14:24:10.119467Z'
-                      - sType: TEMP
-                        sName: 'SHT3x'
-                        sData: '15.39'
-                        sTimestamp: '2021-10-08T14:24:10.119467Z'
-          description: |
-            The collection of humidity and temperature readings, obtained from 
-            the SHT3x environmental data sensor
-        '500':
-          $ref: '#/components/responses/sensorError'
-  /sensors/bme280:
-    summary: 'The temperature, humidity and pressure BME280 sensor readings'
-    description: |-
-      This resource allows to obtain temperature, humidity, and pressure readings
-      from the BME280 environmental data sensor
-    get:
-      tags: [ ]
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SensorReadingsType'
-              examples:
-                BME280ThpReadingsExample:
-                  value:
-                    sReadings:
-                      - sId: '60'
-                        sType: TEMP
-                        sData: '26.079965189471842'
-                        sTimestamp: '2021-08-22T18:10:55.736630Z'
-                      - sId: '60'
-                        sType: HUMID
-                        sData: '45.481067387147625'
-                        sTimestamp: '2021-08-22T18:10:55.736630Z'
-                      - sId: '60'
-                        sType: PRESS
-                        sData: '99556.74677629767'
-                        sTimestamp: '2021-08-22T18:10:55.736630Z'
-          description: |-
-            The collection of temperature, humidity, and pressure readings, obtained from
-            the BME280 environmental data sensor
-        '500':
-          $ref: '#/components/responses/sensorError'
-      operationId: GetBME280THP
-      summary: 'Get temperature, humidity and pressure readings from BME280'
-      description: |-
-        Can be used to get readings of temperature, humidity, and pressure readings,
-        obtained from the BME280 environmental data sensor
-  /sensors/system:
-    summary: 'The health current state and health data, e.g. CPU temperature, free memory, etc.'
-    description: |-
-      This resource allows to obtain system current state and health data,
+      This resource allows to obtain system and health data,
       e.g. CPU temperature, free memory, obtained from the SBC OS
     get:
-      tags: [ ]
+      tags: [ health ]
       responses:
         '200':
+          description: |-
+            The collection of system state and health data readings, obtained from the SBC OS
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SensorReadingsType'
+                $ref: 'https://raw.githubusercontent.com/eclipse/microprofile-health/4.0/tck/src/main/resources/health-check-schema.json'
               examples:
-                system_readings_example:
-                  value:
-                    sReadings:
-                      - sType: CPU_TEMP
-                        sData: '56.012'
-                        sTimestamp: '2021-08-22T18:10:55.736630Z'
-                      - sType: DISK_SPACE_FREE
-                        sData: '5046586572'
-                        sTimestamp: '2021-08-22T18:10:55.736630Z'
-                      - sType: DISK_SPACE_TOTAL
-                        sData: '5046586572'
-                        sTimestamp: '2021-08-22T18:10:55.736630Z'
-                      - sType: HEAP_MEMORY_USED
-                        sData: '26109542.4'
-                        sTimestamp: '2021-08-22T18:10:55.736630Z'
-                      - sType: HEAP_MEMORY_TOTAL
-                        sData: '50331648'
-                        sTimestamp: '2021-08-22T18:10:55.736630Z'
-                      - sType: HEAP_MEMORY_MAX
-                        sData: '68052582.8'
-                        sTimestamp: '2021-08-22T18:10:55.736630Z'
-          description: |-
-            The collection of system state and health data readings, obtained from the SBC OS
+                HealthCheckExample1:
+                  $ref: '#/components/examples/HealthCheckExample1'
         '500':
-          $ref: '#/components/responses/sensorError'
-      operationId: GetSystemData
-      summary: 'Get health state and health data from the SBC OS'
+          $ref: '#/components/responses/SystemError'
+      operationId: GetHealthData
+      summary: 'Provides health data from the SBC OS'
       description: |-
-        Can be used to get readings of system state and health data readings, obtained from the SBC OS
+        Can be used to get readings of system state and health data, obtained from the SBC OS
 components:
   schemas:
     SensorReadingsType:
@@ -198,22 +165,7 @@ components:
           items:
             $ref: '#/components/schemas/SensorReadingsItemType'
       example:
-        sReadings:
-          - sId: '60'
-            sName: 'BME280'
-            sType: TEMP
-            sData: '26.079965189471842'
-            sTimestamp: '2021-08-22T18:10:55.736630Z'
-          - sId: '60'
-            sName: 'BME280'
-            sType: HUMID
-            sData: '45.481067387147625'
-            sTimestamp: '2021-08-22T18:10:55.736630Z'
-          - sId: '60'
-            sName: 'BME280'
-            sType: PRESS
-            sData: '99556.74677629767'
-            sTimestamp: '2021-08-22T18:10:55.736630Z'
+        $ref: '#/components/examples/SHT3xSensorErrorExample1'
     SensorReadingsItemType:
       description: |
         A structure containing the environmental sensor data readings,
@@ -284,16 +236,105 @@ components:
           BH1750 data read error
           Caused by: java.lang.RuntimeException: Test exception
         eventTimestamp: '2021-08-22T20:34:51.809518Z'
+    Sht3xStatusType:
+      description: |
+        This type describes SHT3x status register, containing information on the operational status of the heater,
+        the alert mode and on the execution status of the last command and the last write sequence
+      type: object
+      properties:
+        writeDataChecksumStatus:
+          type: string
+          enum:
+            - LAST_WRITE_CORRECT
+            - LAST_WRITE_FAILED
+        commandStatus:
+          type: string
+          enum:
+            - LAST_COMMAND_SUCCESS
+            - LAST_COMMAND_NOT_PROCESSED
+        systemResetDetected:
+          type: string
+          enum:
+            - NO_RESET
+            - RESET
+        tTrackingAlert:
+          type: string
+          enum:
+            - NO_ALERT
+            - ALERT
+        rhTrackingAlert:
+          type: string
+          enum:
+            - NO_ALERT
+            - ALERT
+        heaterStatus:
+          type: string
+          enum:
+            - ON
+            - OFF
+        alertPendingStatus:
+          type: string
+          enum:
+            - NO_PENDING_ALERT
+            - AT_LEAST_ONE_PENDING_ALERT
   responses:
     BH1750SensorError:
+      description: BH1750 sensor read error
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/SensorErrorType'
-          example:
-            $ref: '#/components/examples/BH1750SensorErrorExample'
-      description: BH1750 sensor error message
+          examples:
+            BH1750SensorErrorExample:
+              $ref: '#/components/examples/BH1750SensorErrorExample'
+    SHT3xSensorError1:
+      description: SHT3x sensor read error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SensorErrorType'
+          examples:
+            SHT3xSensorErrorExample1:
+              $ref: '#/components/examples/SHT3xSensorErrorExample1'
+    SHT3xSensorError2:
+      description: SHT3x sensor write error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SensorErrorType'
+          examples:
+            SHT3xSensorErrorExample2:
+              $ref: '#/components/examples/SHT3xSensorErrorExample2'
+    BMP180SensorError1:
+      description: BMP180 sensor read error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SensorErrorType'
+          examples:
+            BMP180SensorErrorExample1:
+              $ref: '#/components/examples/BMP180SensorErrorExample1'
+    SystemError:
+      description: |
+        System error responses:
+        SystemErrorExample1 - CPU temperature read error
+        SystemErrorExample2 - Disk space fetch error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SensorErrorType'
+          examples:
+            SystemErrorExample1:
+              $ref: '#/components/examples/SystemErrorExample1'
+            SystemErrorExample2:
+              $ref: '#/components/examples/SystemErrorExample2'
   examples:
+    BH1750AmbientLightIntensityReadingsExample1:
+      value:
+        sType: LIGHT
+        sName: 'BH1750'
+        sData: '1.67'
+        sTimestamp: '2021-08-22T22:44:20.369467Z'
     BH1750SensorErrorExample:
       value:
         eventId: E-BH1750-0001
@@ -305,6 +346,17 @@ components:
           BH1750 data read error
           Caused by: java.lang.RuntimeException: Test exception
         eventTimestamp: '2021-08-22T20:34:51.809518Z'
+    SHT3xHumidityTemperatureReadingsExample1:
+      value:
+        sReadings:
+          - sType: HUMID
+            sName: 'SHT3x'
+            sData: '75.7'
+            sTimestamp: '2021-10-08T14:24:10.119467Z'
+          - sType: TEMP
+            sName: 'SHT3x'
+            sData: '15.39'
+            sTimestamp: '2021-10-08T14:24:10.119467Z'
     SHT3xSensorErrorExample1:
       value:
         eventId: E-SHT3X-0001
@@ -325,5 +377,87 @@ components:
         desc: |
           dev.sergevas.iot.env.shared.exception.SensorException:
           SHT3X data write error
+          Caused by: java.lang.RuntimeException: Test exception
+        eventTimestamp: '2021-08-22T20:34:51.809518Z'
+    Sht3xStatusTypeExample1:
+      value:
+        tTrackingAlert: NO_ALERT
+        alertPendingStatus: AT_LEAST_ONE_PENDING_ALERT
+        commandStatus: LAST_COMMAND_SUCCESS
+        heaterStatus: OFF
+        rhTrackingAlert: NO_ALERT
+        systemResetDetected: RESET
+        writeDataChecksumStatus: LAST_WRITE_CORRECT
+    BMP180TemperaturePressureReadingsExample1:
+      value:
+        sReadings:
+          - sId: '55'
+            sType: TEMP
+            sName: 'BMP180'
+            sData: '25.089'
+            sTimestamp: '2021-09-20T19:34:10.119467Z'
+          - sId: '55'
+            sType: PRESS
+            sName: 'BMP180'
+            sData: '69964'
+            sTimestamp: '2021-09-20T19:34:10.119467Z'
+    BMP180SensorErrorExample1:
+      value:
+        eventId: E-BMP180-0001
+        eventName: BMP180 data read error
+        sName: BMP180
+        sType: TEMP_PRESS
+        desc: |
+          dev.sergevas.iot.env.shared.exception.SensorException:
+          SHT3X data read error
+          Caused by: java.lang.RuntimeException: Test exception
+        eventTimestamp: '2021-08-22T20:34:51.809518Z'
+    HealthCheckExample1:
+      description: The runtime health information
+      value:
+        status: UP
+        checks:
+          - name: diskSpace
+            status: UP
+            data:
+              freeBytes: 25064128512
+              free: 23.34 GB
+              percentFree: 80.67%
+              total: 28.93 GB
+              totalBytes: 31068491776
+          - name: heapMemory
+            status: UP
+            data:
+              free: 19.69 MB
+              freeBytes: 20651696
+              max: 61.88 MB
+              maxBytes: 64880640
+              percentFree: 81.53%
+              total: 31.06 MB
+              totalBytes: 32636928
+          - name: systemInfo
+            status: UP
+            data:
+              cpuTemp: 42.932
+    SystemErrorExample1:
+      value:
+        eventId: E-SYSTEM-0001
+        eventName: CPU temperature read error
+        sName: Raspberry Pi Zero 2
+        sType: CPU_TEMP
+        desc: |
+          dev.sergevas.iot.env.shared.exception.SensorException:
+          CPU temperature read error
+          Caused by: java.lang.RuntimeException: Test exception
+        eventTimestamp: '2021-08-22T20:34:51.809518Z'
+    SystemErrorExample2:
+      value:
+        eventId: E-SYSTEM-0002
+        eventName: Disk space fetch error
+        sName: Raspberry Pi Zero 2
+        sType: DISK_SPACE
+        desc: |
+          dev.sergevas.iot.env.shared.exception.SensorException:
+          Disk space fetch error
           Caused by: java.lang.RuntimeException: Test exception
         eventTimestamp: '2021-08-22T20:34:51.809518Z'

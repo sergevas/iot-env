@@ -1,6 +1,5 @@
 package dev.sergevas.iot.env.domain;
 
-import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.validation.Valid;
 
 import java.util.ArrayList;
@@ -23,13 +22,10 @@ public class SensorReadingsType {
         return this;
     }
 
-
-    @JsonbProperty("s_readings")
     public List<SensorReadingsItemType> getsReadings() {
         return sReadings;
     }
 
-    @JsonbProperty("s_readings")
     public void setsReadings(List<SensorReadingsItemType> sReadings) {
         this.sReadings = sReadings;
     }
