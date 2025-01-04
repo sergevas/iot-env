@@ -3,7 +3,7 @@ package dev.sergevas.iot.env.application.service;
 import dev.sergevas.iot.env.application.port.in.Bmp180UseCase;
 import dev.sergevas.iot.env.application.port.out.PressureReader;
 import dev.sergevas.iot.env.application.port.out.TemperatureReader;
-import dev.sergevas.iot.env.domain.Bmp180Readings;
+import dev.sergevas.iot.env.domain.bmp180.Bmp180Readings;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
