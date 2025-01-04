@@ -5,7 +5,6 @@ import dev.sergevas.iot.env.application.port.out.health.CpuTempFetcher;
 import dev.sergevas.iot.env.domain.SensorName;
 import dev.sergevas.iot.env.domain.SensorType;
 import dev.sergevas.iot.env.infra.log.interceptor.Loggable;
-import io.quarkus.arc.profile.IfBuildProfile;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -15,7 +14,6 @@ import java.io.InputStreamReader;
 import static dev.sergevas.iot.env.domain.ErrorEvent.E_SYSTEM_0001;
 
 @ApplicationScoped
-@IfBuildProfile("prod")
 public class CpuTempAdapter implements CpuTempFetcher {
 
     public static final String[] FETCH_CPU_TEMP_CMD = new String[]{"cat", "/sys/class/thermal/thermal_zone0/temp"};
