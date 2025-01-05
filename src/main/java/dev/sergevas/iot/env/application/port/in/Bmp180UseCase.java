@@ -4,5 +4,13 @@ import dev.sergevas.iot.env.domain.bmp180.Bmp180Readings;
 
 public interface Bmp180UseCase {
 
-    Bmp180Readings getSensorReadingsItemTypeForBmp180();
+    double getTemperature();
+
+    double getPressure();
+
+    Bmp180Readings getSensorReadings();
+
+    String getChipId();
+
+    void reset();
 }

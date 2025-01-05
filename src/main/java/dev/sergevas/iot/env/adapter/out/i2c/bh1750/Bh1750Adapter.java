@@ -55,6 +55,6 @@ public class Bh1750Adapter implements LightIntensityReader {
     }
 
     public double fromRawReadingsToLightIntensity(byte[] i2cReadings) {
-        return Math.round(RawDataConvertor.toUnsignedInt(i2cReadings) / 1.2 * 100.0) / 100.0;
+        return Math.round(RawDataConvertor.toUnsignedIntFromWord(i2cReadings) / 1.2 * 100.0) / 100.0;
     }
 }

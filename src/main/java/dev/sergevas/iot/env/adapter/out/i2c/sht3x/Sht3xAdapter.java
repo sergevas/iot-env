@@ -17,7 +17,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import static dev.sergevas.iot.env.adapter.out.i2c.I2CInterfaceProvider.i2C;
 import static dev.sergevas.iot.env.adapter.out.i2c.I2cCommandWriter.writeCommand;
-import static dev.sergevas.iot.env.adapter.out.i2c.RawDataConvertor.toUnsignedInt;
+import static dev.sergevas.iot.env.adapter.out.i2c.RawDataConvertor.toUnsignedIntFromWord;
 import static dev.sergevas.iot.env.adapter.out.i2c.sht3x.CrcValidator.warnIfNotValid;
 import static dev.sergevas.iot.env.domain.ErrorEvent.E_SHT3X_0001;
 import static dev.sergevas.iot.env.domain.ErrorEvent.E_SHT3X_0002;
@@ -107,8 +107,8 @@ public class Sht3xAdapter implements Sht3xSpec {
         byte[] humidReadings = copyOfRange(readings, 3, 5);
         warnIfNotValid(humidReadings, readings[5]);
         return new Sht3xReadings(
-                175.0 * toUnsignedInt(tempReadings) / 65535 - 45,
-                100.0 * toUnsignedInt(humidReadings) / 65535
+                175.0 * toUnsignedIntFromWord(tempReadings) / 65535 - 45,
+                100.0 * toUnsignedIntFromWord(humidReadings) / 65535
         );
     }
 

@@ -3,16 +3,16 @@ package dev.sergevas.iot.env.application.service.shared;
 public class StringUtil {
 
     public static String toHexString(byte b) {
-        return String.format("%02X ", b);
+        return String.format("%02X", b);
     }
 
     public static String toHexString(int i) {
-        return String.format("%02X ", i);
+        return String.format("%02X", i);
     }
 
     public static void appendHexString(StringBuilder builder, byte[] bytes) {
         for (byte b : bytes) {
-            builder.append(toHexString(b));
+            builder.append(toHexString(b)).append(" ");
         }
     }
 
@@ -25,7 +25,7 @@ public class StringUtil {
     public static String toHexString(int[] rowData) {
         StringBuilder sb = new StringBuilder();
         for (int rowDatum : rowData) {
-            sb.append(toHexString(rowDatum));
+            sb.append(toHexString(rowDatum)).append(" ");
         }
         return sb.toString().trim();
     }

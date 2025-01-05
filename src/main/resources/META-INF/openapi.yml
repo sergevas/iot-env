@@ -106,7 +106,7 @@ paths:
           description: Status register cleared successfully
         '500':
           $ref: '#/components/responses/SHT3xSensorError2'
-  /sensors/bmp180:
+  /sensors/bmp180/readings:
     summary: The BMP180 barometric air pressure and temperature sensor readings
     description: |-
       This resource allows to obtain barometric air pressure and temperature readings from the BMP180 sensor
@@ -129,6 +129,43 @@ paths:
                   $ref: '#/components/examples/BMP180TemperaturePressureReadingsExample1'
         '500':
           $ref: '#/components/responses/BMP180SensorError1'
+  /sensors/bmp180/chipId:
+    summary: The BMP180 chip id
+    description: |-
+      This resource allows to obtain BMP180 sensor chip id
+    get:
+      tags: [ bmp180 ]
+      operationId: GetBMP180ChipId
+      summary: Get BMP180 chip id value
+      description: Can be used to get BMP180 sensor chip id
+      responses:
+        '200':
+          description: |
+            BMP180 sensor chip id value
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bmp180ChipId'
+              examples:
+                Bmp180ChipIdExample2:
+                  $ref: '#/components/examples/Bmp180ChipIdExample1'
+        '500':
+          $ref: '#/components/responses/BMP180SensorError1'
+  /sensors/bmp180/reset:
+    summary: Sends soft reset command to the BMP180
+    description: |-
+      The resource allows to send soft reset command to the BMP180.
+      This performs the same sequence as power reset.
+    put:
+      tags: [ bmp180 ]
+      operationId: ResetSHT3x
+      summary: Send soft reset command to the BMP180
+      description: Performs the same sequence as power reset.
+      responses:
+        '200':
+          description: Reset completed successfully
+        '500':
+          $ref: '#/components/responses/BMP180SensorError2'
   /health:
     summary: 'Provides health information of the runtime, e.g. CPU temperature, free memory, etc.'
     description: |-
@@ -277,6 +314,13 @@ components:
           enum:
             - NO_PENDING_ALERT
             - AT_LEAST_ONE_PENDING_ALERT
+    Bmp180ChipId:
+      description: |
+        This type describes BMP180 chip id value
+      type: object
+      properties:
+        chipId:
+          type: string
   responses:
     BH1750SensorError:
       description: BH1750 sensor read error
@@ -314,6 +358,15 @@ components:
           examples:
             BMP180SensorErrorExample1:
               $ref: '#/components/examples/BMP180SensorErrorExample1'
+    BMP180SensorError2:
+      description: BMP180 sensor write error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/SensorErrorType'
+          examples:
+            BMP180SensorErrorExample2:
+              $ref: '#/components/examples/BMP180SensorErrorExample2'
     SystemError:
       description: |
         System error responses:
@@ -401,6 +454,9 @@ components:
             sName: 'BMP180'
             sData: '69964'
             sTimestamp: '2021-09-20T19:34:10.119467Z'
+    Bmp180ChipIdExample1:
+      value:
+        chipId: '55'
     BMP180SensorErrorExample1:
       value:
         eventId: E-BMP180-0001
@@ -409,7 +465,18 @@ components:
         sType: TEMP_PRESS
         desc: |
           dev.sergevas.iot.env.shared.exception.SensorException:
-          SHT3X data read error
+          BMP180 data read error
+          Caused by: java.lang.RuntimeException: Test exception
+        eventTimestamp: '2021-08-22T20:34:51.809518Z'
+    BMP180SensorErrorExample2:
+      value:
+        eventId: E-BMP180-0002
+        eventName: BMP180 data write error
+        sName: BMP180
+        sType: TEMP_PRESS
+        desc: |
+          dev.sergevas.iot.env.shared.exception.SensorException:
+          BMP180 data write error
           Caused by: java.lang.RuntimeException: Test exception
         eventTimestamp: '2021-08-22T20:34:51.809518Z'
     HealthCheckExample1:

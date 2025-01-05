@@ -1,25 +1,45 @@
 package dev.sergevas.iot.env.application.service;
 
 import dev.sergevas.iot.env.application.port.in.Bmp180UseCase;
-import dev.sergevas.iot.env.application.port.out.PressureReader;
-import dev.sergevas.iot.env.application.port.out.TemperatureReader;
+import dev.sergevas.iot.env.application.port.out.BMP180Spec;
 import dev.sergevas.iot.env.domain.bmp180.Bmp180Readings;
+import dev.sergevas.iot.env.infra.log.interceptor.Loggable;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 @ApplicationScoped
 public class Bmp180Service implements Bmp180UseCase {
-    private final TemperatureReader temperatureReader;
-    private final PressureReader pressureReader;
 
     @Inject
-    public Bmp180Service(TemperatureReader temperatureReader, PressureReader pressureReader) {
-        this.pressureReader = pressureReader;
-        this.temperatureReader = temperatureReader;
+    BMP180Spec bmp180Spec;
+
+    @Loggable(logReturnVal = true)
+    @Override
+    public double getTemperature() {
+        return bmp180Spec.readTemperature();
     }
 
+    @Loggable(logReturnVal = true)
     @Override
-    public Bmp180Readings getSensorReadingsItemTypeForBmp180() {
-        return new Bmp180Readings(temperatureReader.readTemperature(), pressureReader.getPressure());
+    public double getPressure() {
+        return bmp180Spec.readPressure();
+    }
+
+    @Loggable(logReturnVal = true)
+    @Override
+    public Bmp180Readings getSensorReadings() {
+        return new Bmp180Readings(bmp180Spec.readTemperature(), bmp180Spec.readPressure(), bmp180Spec.readChipId());
+    }
+
+    @Loggable
+    @Override
+    public String getChipId() {
+        return bmp180Spec.readChipId();
+    }
+
+    @Loggable
+    @Override
+    public void reset() {
+        bmp180Spec.softReset();
     }
 }
