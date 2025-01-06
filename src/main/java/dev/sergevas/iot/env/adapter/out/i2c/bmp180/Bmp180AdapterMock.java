@@ -35,14 +35,14 @@ public class Bmp180AdapterMock implements BMP180Spec {
 
     @Loggable
     @Override
-    public double readTemperature() {
-        return 27.8;
+    public int readUncompensatedTemperature() {
+        return 27898;
     }
 
     @Loggable
     @Override
-    public double readPressure() {
-        return 100000.48;
+    public int readUncompensatedPressure() {
+        return 23843;
     }
 
     @Loggable(logReturnVal = true)

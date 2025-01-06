@@ -1,21 +1,25 @@
 package dev.sergevas.iot.env.adapter.out.i2c.bmp180;
 
+import dev.sergevas.iot.env.adapter.out.i2c.I2CInterfaceProvider;
 import dev.sergevas.iot.env.application.port.out.BMP180Spec;
 import dev.sergevas.iot.env.application.port.out.SensorException;
 import dev.sergevas.iot.env.application.service.shared.StringUtil;
 import dev.sergevas.iot.env.domain.bmp180.Calibration;
 import dev.sergevas.iot.env.infra.log.interceptor.Loggable;
 import io.quarkiverse.jef.java.embedded.framework.linux.i2c.I2CBus;
+import io.quarkiverse.jef.java.embedded.framework.linux.i2c.I2CInterface;
+import io.quarkiverse.jef.java.embedded.framework.linux.i2c.SMBus;
 import io.quarkiverse.jef.java.embedded.framework.runtime.i2c.I2C;
 import io.quarkus.arc.profile.IfBuildProfile;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-import static dev.sergevas.iot.env.adapter.out.i2c.I2CInterfaceProvider.i2C;
 import static dev.sergevas.iot.env.adapter.out.i2c.I2cCommandWriter.writeCommand;
 import static dev.sergevas.iot.env.adapter.out.i2c.RawDataConvertor.toSignedIntFromWord;
 import static dev.sergevas.iot.env.adapter.out.i2c.RawDataConvertor.toUnsignedIntFromWord;
+import static dev.sergevas.iot.env.adapter.out.i2c.bmp180.Bmp180Adapter.OutRegister.OUT_LSB;
+import static dev.sergevas.iot.env.adapter.out.i2c.bmp180.Bmp180Adapter.OutRegister.OUT_MSB;
 import static dev.sergevas.iot.env.domain.ErrorEvent.E_BMP180_0001;
 import static dev.sergevas.iot.env.domain.ErrorEvent.E_BMP180_0002;
 import static dev.sergevas.iot.env.domain.SensorName.BMP180;
@@ -27,9 +31,35 @@ import static java.lang.Thread.sleep;
 @ApplicationScoped
 public class Bmp180Adapter implements BMP180Spec {
 
+    /*  BST-BMP180-DS000-12 4. Global Memory Map
+       | Register  | Address  |
+       |  OUT_MSB  |   0xF6   |
+       |  OUT_LSB  |   0xF7   |
+       |  OUT_XLSB |   0xF8   |
+   */
+
+    public enum OutRegister {
+
+        OUT_MSB(0xF6),
+        OUT_LSB(0xF7),
+        OUT_XLSB(0xF8);
+
+        private final int address;
+
+        OutRegister(int address) {
+            this.address = address;
+        }
+
+        public int address() {
+            return address;
+        }
+    }
+
     private static final int CHIP_ID_REGISTER = 0xD0;
     private static final int SOFT_RESET_REGISTER = 0xE0;
     private static final int CONTROL_REGISTER = 0xF4;
+    private static final int CONTROL_REGISTER_TEMP_MEASUREMENT_COMMAND = 0x2E;
+    private static final long TEMP_MEASUREMENT_MAX_CONVERSION_TIME = 5; //  BST-BMP180-DS000-12 Table 8
 
     @I2C(name = "i2c0")
     I2CBus i2C0Bus;
@@ -37,23 +67,18 @@ public class Bmp180Adapter implements BMP180Spec {
     @ConfigProperty(name = "bmp180.moduleAddress")
     int bmp180ModuleAddress;
 
-    private Calibration calibration;
-    private String chipId;
-
     @Loggable
     @PostConstruct
     public void init() {
-        calibration = readCalibration();
-        chipId = readChipId();
+
     }
 
     @Loggable(logReturnVal = true)
     @Override
     public Calibration readCalibration() {
         try {
-            var i2CInterface = i2C(bmp180ModuleAddress, i2C0Bus);
+            var smBus = smBus();
             sleep(2);
-            var smBus = i2CInterface.getSmBus();
             return new Calibration()
                     .ac1(toSignedIntFromWord(smBus.readByteData(AC1_MSB.address()), smBus.readByteData(AC1_LSB.address())))
                     .ac2(toSignedIntFromWord(smBus.readByteData(AC2_MSB.address()), smBus.readByteData(AC2_LSB.address())))
@@ -73,13 +98,20 @@ public class Bmp180Adapter implements BMP180Spec {
 
     @Loggable(logReturnVal = true)
     @Override
-    public double readTemperature() {
-        return 0;
+    public int readUncompensatedTemperature() {
+        try {
+            var smBus = smBus();
+            smBus.writeByteData(CONTROL_REGISTER, CONTROL_REGISTER_TEMP_MEASUREMENT_COMMAND);
+            sleep(TEMP_MEASUREMENT_MAX_CONVERSION_TIME);
+            return toSignedIntFromWord(smBus.readByteData(OUT_MSB.address()), smBus.readByteData(OUT_LSB.address()));
+        } catch (Exception e) {
+            throw new SensorException(E_BMP180_0001.getId(), TEMP_PRESS, BMP180, E_BMP180_0001.getName(), e);
+        }
     }
 
     @Loggable(logReturnVal = true)
     @Override
-    public double readPressure() {
+    public int readUncompensatedPressure() {
         return 0;
     }
 
@@ -87,10 +119,7 @@ public class Bmp180Adapter implements BMP180Spec {
     @Override
     public String readChipId() {
         try {
-            if (chipId == null) {
-                return StringUtil.toHexString(i2C(bmp180ModuleAddress, i2C0Bus).getSmBus().readByteData(CHIP_ID_REGISTER));
-            }
-            return chipId;
+            return StringUtil.toHexString(i2C().getSmBus().readByteData(CHIP_ID_REGISTER));
         } catch (Exception e) {
             throw new SensorException(E_BMP180_0001.getId(), TEMP_PRESS, BMP180, E_BMP180_0001.getName(), e);
         }
@@ -100,9 +129,17 @@ public class Bmp180Adapter implements BMP180Spec {
     @Override
     public void softReset() {
         try {
-            writeCommand(i2C(bmp180ModuleAddress, i2C0Bus), SOFT_RESET_REGISTER);
+            writeCommand(i2C(), SOFT_RESET_REGISTER);
         } catch (Exception e) {
             throw new SensorException(E_BMP180_0002.getId(), TEMP_PRESS, BMP180, E_BMP180_0002.getName(), e);
         }
+    }
+
+    private I2CInterface i2C() {
+        return I2CInterfaceProvider.i2C(bmp180ModuleAddress, i2C0Bus);
+    }
+
+    private SMBus smBus() {
+        return I2CInterfaceProvider.smBus(bmp180ModuleAddress, i2C0Bus);
     }
 }

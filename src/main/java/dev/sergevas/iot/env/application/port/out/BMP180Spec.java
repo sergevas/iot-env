@@ -6,9 +6,9 @@ public interface BMP180Spec {
 
     Calibration readCalibration();
 
-    double readTemperature();
+    int readUncompensatedTemperature();
 
-    double readPressure();
+    int readUncompensatedPressure();
 
     String readChipId();
 
