@@ -11,6 +11,7 @@ import io.quarkiverse.jef.java.embedded.framework.linux.i2c.I2CInterface;
 import io.quarkiverse.jef.java.embedded.framework.linux.i2c.SMBus;
 import io.quarkiverse.jef.java.embedded.framework.runtime.i2c.I2C;
 import io.quarkus.arc.profile.IfBuildProfile;
+import io.quarkus.logging.Log;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
@@ -55,11 +56,51 @@ public class Bmp180Adapter implements BMP180Spec {
         }
     }
 
+    public enum PressOversamplingRatio {
+        SINGLE(0x00),
+        TWO_TIMES(0x40),
+        FOUR_TIMES(0x80),
+        EIGHT_TIMES(0xC0);
+
+        private final int oss;
+
+        PressOversamplingRatio(int oss) {
+            this.oss = oss;
+        }
+
+        public int getOss() {
+            return oss;
+        }
+    }
+
+    public enum StartOfConversation {
+        IN_PROGRESS(0x00000020),
+        COMPLETE(0x00000000);
+
+        private int sco;
+
+        StartOfConversation(int sco) {
+            this.sco = sco;
+        }
+
+        public int getSco() {
+            return sco;
+        }
+    }
+
     private static final int CHIP_ID_REGISTER = 0xD0;
     private static final int SOFT_RESET_REGISTER = 0xE0;
     private static final int CONTROL_REGISTER = 0xF4;
     private static final int CONTROL_REGISTER_TEMP_MEASUREMENT_COMMAND = 0x2E;
-    private static final long TEMP_MEASUREMENT_MAX_CONVERSION_TIME = 5; //  BST-BMP180-DS000-12 Table 8
+    private static final int CONTROL_REGISTER_PRESS_MEASUREMENT_DEFAULT_COMMAND = 0x34;
+    //  BST-BMP180-DS000-12 Table 8
+    private static final long TEMP_MEASUREMENT_MAX_CONVERSION_TIME = 5;
+    /*
+     * BST-BMP180-DS000-12 Table 3, Table 8
+     * Max conversion time for Ultra Low Power Mode (oversampling setting OSS = 0x00)
+     * Used as a minimum wait time for pressure measurements conversion
+     */
+    private static final long PRESS_MEASUREMENT_MAX_CONVERSION_TIME = 5;
 
     @I2C(name = "i2c0")
     I2CBus i2C0Bus;
@@ -67,10 +108,17 @@ public class Bmp180Adapter implements BMP180Spec {
     @ConfigProperty(name = "bmp180.moduleAddress")
     int bmp180ModuleAddress;
 
+    @ConfigProperty(name = "bmp180.pressureOversamplingRatio")
+    String pressureOversamplingRatio;
+
+    private int controlRegPressMeasurementCommand;
+
     @Loggable
     @PostConstruct
     public void init() {
-
+        controlRegPressMeasurementCommand = CONTROL_REGISTER_PRESS_MEASUREMENT_DEFAULT_COMMAND
+                | PressOversamplingRatio.valueOf(pressureOversamplingRatio).getOss();
+        Log.infof("controlRegPressMeasurementCommand=%s", StringUtil.toHexString(controlRegPressMeasurementCommand));
     }
 
     @Loggable(logReturnVal = true)
@@ -112,7 +160,16 @@ public class Bmp180Adapter implements BMP180Spec {
     @Loggable(logReturnVal = true)
     @Override
     public int readUncompensatedPressure() {
-        return 0;
+        try {
+            var smBus = smBus();
+            smBus.writeByteData(CONTROL_REGISTER, controlRegPressMeasurementCommand);
+            while (StartOfConversation.IN_PROGRESS.getSco() == (smBus.readByteData(CONTROL_REGISTER) & StartOfConversation.IN_PROGRESS.getSco())) {
+                sleep(PRESS_MEASUREMENT_MAX_CONVERSION_TIME);
+            }
+            return toSignedIntFromWord(smBus.readByteData(OUT_MSB.address()), smBus.readByteData(OUT_LSB.address()));
+        } catch (Exception e) {
+            throw new SensorException(E_BMP180_0001.getId(), TEMP_PRESS, BMP180, E_BMP180_0001.getName(), e);
+        }
     }
 
     @Loggable(logReturnVal = true)
