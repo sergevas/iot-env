@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 class RawDataConvertorTest {
 
     @Test
-    void testToUnsignedIntFromWord() {
+    void testToUnsignedIntFromWordAsByteArray() {
         assertEquals(65525, toUnsignedIntFromWord(new byte[]{(byte) 0xFF, (byte) 0xF5}));
         assertEquals(65535, toUnsignedIntFromWord(new byte[]{(byte) 0xFF, (byte) 0xFF}));
         assertEquals(32768, toUnsignedIntFromWord(new byte[]{(byte) 0x80, (byte) 0x00}));
@@ -19,13 +19,31 @@ class RawDataConvertorTest {
     }
 
     @Test
-    void testToSignedIntFromWord() {
+    void testToUnsignedIntFromWordAsInts() {
+        assertEquals(65525, toUnsignedIntFromWord(0xFF, 0xF5));
+        assertEquals(65535, toUnsignedIntFromWord(0xFF, 0xFF));
+        assertEquals(32768, toUnsignedIntFromWord(0x80, 0x00));
+        assertEquals(0, toUnsignedIntFromWord(0x00, 0x00));
+    }
+
+    @Test
+    void testToSignedIntFromWordFromByteArray() {
         assertEquals(0, toSignedIntFromWord(new byte[]{(byte) 0x00, (byte) 0x00}));
         assertEquals(-1, toSignedIntFromWord(new byte[]{(byte) 0xFF, (byte) 0xFF}));
         assertEquals(32767, toSignedIntFromWord(new byte[]{(byte) 0x7F, (byte) 0xFF}));
         assertEquals(-32768, toSignedIntFromWord(new byte[]{(byte) 0x80, (byte) 0x00}));
         assertEquals(-11, toSignedIntFromWord(new byte[]{(byte) 0xFF, (byte) 0xF5}));
         assertEquals(32757, toSignedIntFromWord(new byte[]{(byte) 0x7F, (byte) 0xF5}));
+    }
+
+    @Test
+    void testToSignedIntFromWordFromInts() {
+        assertEquals(0, toSignedIntFromWord(0x00, 0x00));
+        assertEquals(-1, toSignedIntFromWord(0xFF, 0xFF));
+        assertEquals(32767, toSignedIntFromWord(0x7F, 0xFF));
+        assertEquals(-32768, toSignedIntFromWord(0x80, 0x00));
+        assertEquals(-11, toSignedIntFromWord(0xFF, 0xF5));
+        assertEquals(32757, toSignedIntFromWord(0x7F, 0xF5));
     }
 
     @Test

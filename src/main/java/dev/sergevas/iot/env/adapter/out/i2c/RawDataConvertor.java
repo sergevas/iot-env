@@ -25,7 +25,7 @@ public class RawDataConvertor {
     }
 
     public static int toSignedIntFromWord(int msb, int lsb) {
-        return msb << 8 | lsb & 0xFF;
+        return ((byte) msb) << 8 | lsb & 0xFF;
     }
 
     private static void validateWord(byte[] word) {
