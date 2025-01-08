@@ -1,6 +1,11 @@
 package dev.sergevas.iot.env.domain.bmp180;
 
+import io.quarkus.logging.Log;
+
+import java.util.StringJoiner;
+
 import static dev.sergevas.iot.env.adapter.out.i2c.RawDataConvertor.toSignedIntFromWord;
+import static dev.sergevas.iot.env.application.service.shared.StringUtil.toHexString;
 
 public class OutRegister {
 
@@ -54,10 +59,22 @@ public class OutRegister {
     }
 
     public int toUT() {
+        Log.debugf("Enter toUT() %s", this);
         return toSignedIntFromWord(msb, lsb);
     }
 
     public int toUP() {
-        return (msb << 16 | (lsb & 0xFF) << 8 | xlsb & 0xFF) >> (8 - pressOversamplingRatio.getOss());
+        Log.debugf("Enter toUP() %s", this);
+        return ((msb & 0xFF) << 16 | (lsb & 0xFF) << 8 | xlsb & 0xFF) >> (8 - pressOversamplingRatio.getOss());
+    }
+
+    @Override
+    public String toString() {
+        return new StringJoiner(", ", OutRegister.class.getSimpleName() + "[", "]")
+                .add("msb=" + toHexString(msb))
+                .add("lsb=" + toHexString(lsb))
+                .add("xlsb=" + toHexString(xlsb))
+                .add("pressOversamplingRatio=" + pressOversamplingRatio)
+                .toString();
     }
 }

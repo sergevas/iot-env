@@ -13,6 +13,7 @@ import java.util.StringJoiner;
 
 public class SensorReadingsItemType {
     private @Valid String sType;
+    private @Valid String sUnits;
     private @Valid String sId;
     private @Valid String sName;
     private @Valid String sData;
@@ -32,6 +33,22 @@ public class SensorReadingsItemType {
 
     public void setsType(String sType) {
         this.sType = sType;
+    }
+
+    /**
+     * A units of measurements, e.g. celsius
+     **/
+    public SensorReadingsItemType sUnits(String sUnits) {
+        this.sUnits = sUnits;
+        return this;
+    }
+
+    public String getsUnits() {
+        return sUnits;
+    }
+
+    public void setsUnits(String sUnits) {
+        this.sUnits = sUnits;
     }
 
     /**
@@ -111,6 +128,7 @@ public class SensorReadingsItemType {
         }
         SensorReadingsItemType sensorReadingsItemType = (SensorReadingsItemType) o;
         return Objects.equals(this.sType, sensorReadingsItemType.sType) &&
+                Objects.equals(this.sUnits, sensorReadingsItemType.sUnits) &&
                 Objects.equals(this.sId, sensorReadingsItemType.sId) &&
                 Objects.equals(this.sName, sensorReadingsItemType.sName) &&
                 Objects.equals(this.sData, sensorReadingsItemType.sData) &&
@@ -119,13 +137,14 @@ public class SensorReadingsItemType {
 
     @Override
     public int hashCode() {
-        return Objects.hash(sType, sId, sName, sData, sTimestamp);
+        return Objects.hash(sType, sUnits, sId, sName, sData, sTimestamp);
     }
 
     @Override
     public String toString() {
         return new StringJoiner(", ", SensorReadingsItemType.class.getSimpleName() + "[", "]")
                 .add("sType='" + sType + "'")
+                .add("sUnits='" + sUnits + "'")
                 .add("sId='" + sId + "'")
                 .add("sName='" + sName + "'")
                 .add("sData='" + sData + "'")

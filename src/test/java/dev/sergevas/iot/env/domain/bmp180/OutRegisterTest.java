@@ -29,5 +29,7 @@ class OutRegisterTest {
                 .pressOversamplingRatio(PressOversamplingRatio.FOUR_TIMES).toUP());
         assertEquals(190747, new OutRegister().msb(0x5D).lsb(0x23).xlsb(0x7F)
                 .pressOversamplingRatio(PressOversamplingRatio.EIGHT_TIMES).toUP());
+        assertEquals(42251, new OutRegister().msb(0xFFFFFFA5).lsb(0x0B).xlsb(0x00)
+                .pressOversamplingRatio(PressOversamplingRatio.SINGLE).toUP());
     }
 }

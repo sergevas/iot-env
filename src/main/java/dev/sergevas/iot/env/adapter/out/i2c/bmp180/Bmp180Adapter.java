@@ -109,7 +109,7 @@ public class Bmp180Adapter implements BMP180Spec {
         try {
             var smBus = smBus();
             smBus.writeByteData(CONTROL_REGISTER, controlRegPressMeasurementCommand);
-            while (IN_PROGRESS.getSco() == (smBus.readByteData(CONTROL_REGISTER) & IN_PROGRESS.getSco())) {
+            while (isPressureMeasurementInProgress(smBus)) {
                 sleep(Duration.ofNanos(pressOversamplingRatioProvider.getRatio().getConversionTime()));
             }
             return new OutRegister()
@@ -121,6 +121,14 @@ public class Bmp180Adapter implements BMP180Spec {
         } catch (Exception e) {
             throw new SensorException(E_BMP180_0001.getId(), TEMP_PRESS, BMP180, E_BMP180_0001.getName(), e);
         }
+    }
+
+    private boolean isPressureMeasurementInProgress(SMBus smBus) throws Exception {
+        int controlRegisterCurrState = smBus.readByteData(CONTROL_REGISTER);
+        Log.debugf("controlRegisterCurrState=%s", StringUtil.toHexString(controlRegisterCurrState));
+        boolean isPressureMeasurementInProgress = IN_PROGRESS.getSco() == (controlRegisterCurrState & IN_PROGRESS.getSco());
+        Log.debugf("isPressureMeasurementInProgress=%b", isPressureMeasurementInProgress);
+        return isPressureMeasurementInProgress;
     }
 
     @Loggable(logReturnVal = true)

@@ -6,7 +6,6 @@ import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import static java.lang.Math.round;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
@@ -38,13 +37,13 @@ class Bmp180TrueReadingsCalculatorTest {
     }
 
     @Test
-    void calculateTrueTemperature() {
-        assertEquals(15.0, round(calculator.calculateTrueTemperature(calibration, ut)));
+    void calculateTrueTemperatureInTenths() {
+        assertEquals(150, calculator.calculateTrueTemperatureInTenths(calibration, ut));
     }
 
 
     @Test
     void calculateTruePressure() {
-        assertEquals(69964.0, round(calculator.calculateTruePressure(calibration, ut, up)));
+        assertEquals(69964, calculator.calculateTruePressure(calibration, ut, up));
     }
 }

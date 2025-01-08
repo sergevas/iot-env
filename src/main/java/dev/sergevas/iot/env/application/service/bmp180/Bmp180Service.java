@@ -1,8 +1,10 @@
 package dev.sergevas.iot.env.application.service.bmp180;
 
-import dev.sergevas.iot.env.application.port.in.Bmp180UseCase;
+import dev.sergevas.iot.env.application.port.bmp180.Bmp180UseCase;
 import dev.sergevas.iot.env.application.port.out.BMP180Spec;
+import dev.sergevas.iot.env.domain.bmp180.Bmp180Pressure;
 import dev.sergevas.iot.env.domain.bmp180.Bmp180Readings;
+import dev.sergevas.iot.env.domain.bmp180.Bmp180Temperature;
 import dev.sergevas.iot.env.domain.bmp180.Calibration;
 import dev.sergevas.iot.env.infra.log.interceptor.Loggable;
 import jakarta.annotation.PostConstruct;
@@ -28,16 +30,16 @@ public class Bmp180Service implements Bmp180UseCase {
 
     @Loggable(logReturnVal = true)
     @Override
-    public double getTemperature() {
-        return bmp180TrueReadingsCalculator.calculateTrueTemperature(calibration,
-                bmp180Spec.readUncompensatedTemperature());
+    public Bmp180Temperature getTemperature() {
+        return new Bmp180Temperature(bmp180TrueReadingsCalculator.calculateTrueTemperatureInTenths(calibration,
+                bmp180Spec.readUncompensatedTemperature()));
     }
 
     @Loggable(logReturnVal = true)
     @Override
-    public double getPressure() {
-        return bmp180TrueReadingsCalculator.calculateTruePressure(calibration,
-                bmp180Spec.readUncompensatedTemperature(), bmp180Spec.readUncompensatedPressure());
+    public Bmp180Pressure getPressure() {
+        return new Bmp180Pressure(bmp180TrueReadingsCalculator.calculateTruePressure(calibration,
+                bmp180Spec.readUncompensatedTemperature(), bmp180Spec.readUncompensatedPressure()));
     }
 
     @Loggable(logReturnVal = true)
@@ -45,12 +47,11 @@ public class Bmp180Service implements Bmp180UseCase {
     public Bmp180Readings getSensorReadings() {
         var chipId = getChipId();
         var uncompensatedTemperature = bmp180Spec.readUncompensatedTemperature();
-        var uncompensatedPressure = bmp180Spec.readUncompensatedTemperature();
-        return new Bmp180Readings(
-                bmp180TrueReadingsCalculator.calculateTrueTemperature(calibration, uncompensatedTemperature),
-                bmp180TrueReadingsCalculator.calculateTruePressure(calibration, uncompensatedTemperature,
-                        uncompensatedPressure),
-                chipId);
+        var uncompensatedPressure = bmp180Spec.readUncompensatedPressure();
+        var temp = bmp180TrueReadingsCalculator.calculateTrueTemperatureInTenths(calibration, uncompensatedTemperature);
+        var pressPa = bmp180TrueReadingsCalculator.calculateTruePressure(calibration, uncompensatedTemperature,
+                uncompensatedPressure);
+        return new Bmp180Readings(new Bmp180Temperature(temp), new Bmp180Pressure(pressPa), chipId);
     }
 
     @Loggable
