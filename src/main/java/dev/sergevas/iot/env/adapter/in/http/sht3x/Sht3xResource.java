@@ -1,19 +1,14 @@
 package dev.sergevas.iot.env.adapter.in.http.sht3x;
 
-import dev.sergevas.iot.env.application.port.in.Sht3xUseCase;
-import dev.sergevas.iot.env.domain.SensorName;
-import dev.sergevas.iot.env.domain.SensorReadingsItemType;
+import dev.sergevas.iot.env.application.port.in.sht3x.Sht3xUseCase;
+import dev.sergevas.iot.env.application.port.in.sht3x.ToSht3xSensorReadingsTypeMapper;
 import dev.sergevas.iot.env.domain.SensorReadingsType;
-import dev.sergevas.iot.env.domain.SensorType;
 import dev.sergevas.iot.env.domain.sht3x.HeaterState;
 import dev.sergevas.iot.env.infra.log.interceptor.Loggable;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 
 @Path("sensors/sht3x")
 public class Sht3xResource {
@@ -26,17 +21,7 @@ public class Sht3xResource {
     @Path("/readings")
     @Produces(MediaType.APPLICATION_JSON)
     public SensorReadingsType getReadings() {
-        return new SensorReadingsType().addSReadingsItem(
-                        new SensorReadingsItemType()
-                                .sType(SensorType.TEMP.name())
-                                .sName(SensorName.SHT3x.getName())
-                                .sTimestamp(OffsetDateTime.now(ZoneOffset.UTC))
-                                .sData(String.valueOf(sht3xUseCase.getSensorReadings().temperature())))
-                .addSReadingsItem(new SensorReadingsItemType()
-                        .sType(SensorType.HUMID.name())
-                        .sName(SensorName.SHT3x.getName())
-                        .sTimestamp(OffsetDateTime.now(ZoneOffset.UTC))
-                        .sData(String.valueOf(sht3xUseCase.getSensorReadings().humidity())));
+        return ToSht3xSensorReadingsTypeMapper.toSht3xSensorReadingsType(sht3xUseCase.getSensorReadings());
     }
 
     @Loggable(logReturnVal = true)

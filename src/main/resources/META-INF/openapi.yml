@@ -123,10 +123,56 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SensorReadingsItemType'
+                $ref: '#/components/schemas/SensorReadingsType'
               examples:
                 BMP180TemperaturePressureReadingsExample1:
                   $ref: '#/components/examples/BMP180TemperaturePressureReadingsExample1'
+        '500':
+          $ref: '#/components/responses/BMP180SensorError1'
+  /sensors/bmp180/readings/pressure:
+    summary: The BMP180 barometric air pressure sensor readings
+    description: |-
+      This resource allows to obtain barometric air pressure readings only from the BMP180 sensor
+    get:
+      tags: [ bmp180 ]
+      operationId: GetBMP180Pressure
+      summary: Get BMP180 pressure readings
+      description: Can be used to get pressure readings from BMP180 sensor
+      responses:
+        '200':
+          description: |
+            The collection of pressure readings in pa and mm/Hg, obtained from
+            the BMP180 environmental data sensor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SensorReadingsType'
+              examples:
+                BMP180TemperaturePressureReadingsExample1:
+                  $ref: '#/components/examples/BMP180PressureReadingsExample1'
+        '500':
+          $ref: '#/components/responses/BMP180SensorError1'
+  /sensors/bmp180/readings/temperature:
+    summary: The BMP180 temperature sensor readings
+    description: |-
+      This resource allows to obtain temperature readings only from the BMP180 sensor
+    get:
+      tags: [ bmp180 ]
+      operationId: GetBMP180Temperature
+      summary: Get BMP180 temperature readings
+      description: Can be used to get temperature readings from BMP180 sensor
+      responses:
+        '200':
+          description: |
+            The temperature readings in celsius, obtained from
+            the BMP180 environmental data sensor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SensorReadingsItemType'
+              examples:
+                BMP180TemperaturePressureReadingsExample1:
+                  $ref: '#/components/examples/BMP180TemperatureReadingsExample1'
         '500':
           $ref: '#/components/responses/BMP180SensorError1'
   /sensors/bmp180/chipId:
@@ -216,6 +262,10 @@ components:
           description: |
             A sensor type, e.g. TEMP (temperature)
           type: string
+        sUnit:
+          description: |
+            A unit of measurement, e.g. Celsius
+          type: string
         sId:
           description: Sensor id
           type: string
@@ -232,7 +282,8 @@ components:
       example:
         sId: '55'
         sName: 'BMP180'
-        sType: TEMP
+        sType: 'TEMP'
+        sUnit: 'celsius'
         sData: '26.079965189471842'
         sTimestamp: '2021-08-22T18:10:55.736630Z'
     SensorErrorType:
@@ -402,11 +453,13 @@ components:
     SHT3xHumidityTemperatureReadingsExample1:
       value:
         sReadings:
-          - sType: HUMID
+          - sType: 'HUMID'
+            sUnit: '%'
             sName: 'SHT3x'
             sData: '75.7'
             sTimestamp: '2021-10-08T14:24:10.119467Z'
-          - sType: TEMP
+          - sType: 'TEMP'
+            sUnit: 'celsius'
             sName: 'SHT3x'
             sData: '15.39'
             sTimestamp: '2021-10-08T14:24:10.119467Z'
@@ -441,18 +494,49 @@ components:
         rhTrackingAlert: NO_ALERT
         systemResetDetected: RESET
         writeDataChecksumStatus: LAST_WRITE_CORRECT
+    BMP180PressureReadingsExample1:
+      value:
+        sReadings:
+          - sId: '55'
+            sType: 'PRESS'
+            sUnit: 'pa'
+            sName: 'BMP180'
+            sData: '69964'
+            sTimestamp: '2021-09-20T19:34:10.119467Z'
+          - sId: '55'
+            sType: 'PRESS'
+            sUnit: 'mm/hg'
+            sName: 'BMP180'
+            sData: '524.77308'
+            sTimestamp: '2021-09-20T19:34:10.119467Z'
+    BMP180TemperatureReadingsExample1:
+      value:
+        sId: '55'
+        sType: 'TEMP'
+        sUnit: 'celsius'
+        sName: 'BMP180'
+        sData: '25.089'
+        sTimestamp: '2021-09-20T19:34:10.119467Z'
     BMP180TemperaturePressureReadingsExample1:
       value:
         sReadings:
           - sId: '55'
-            sType: TEMP
+            sType: 'TEMP'
+            sUnit: 'celsius'
             sName: 'BMP180'
             sData: '25.089'
             sTimestamp: '2021-09-20T19:34:10.119467Z'
           - sId: '55'
-            sType: PRESS
+            sType: 'PRESS'
+            sUnit: 'pa'
             sName: 'BMP180'
             sData: '69964'
+            sTimestamp: '2021-09-20T19:34:10.119467Z'
+          - sId: '55'
+            sType: 'PRESS'
+            sUnit: 'mm/hg'
+            sName: 'BMP180'
+            sData: '524.77308'
             sTimestamp: '2021-09-20T19:34:10.119467Z'
     Bmp180ChipIdExample1:
       value:

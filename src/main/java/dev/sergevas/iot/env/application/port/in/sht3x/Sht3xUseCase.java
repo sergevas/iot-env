@@ -1,4 +1,4 @@
-package dev.sergevas.iot.env.application.port.in;
+package dev.sergevas.iot.env.application.port.in.sht3x;
 
 import dev.sergevas.iot.env.domain.sht3x.HeaterState;
 import dev.sergevas.iot.env.domain.sht3x.Sht3xReadings;

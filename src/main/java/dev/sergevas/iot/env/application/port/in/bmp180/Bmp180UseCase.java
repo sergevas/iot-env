@@ -1,4 +1,4 @@
-package dev.sergevas.iot.env.application.port.bmp180;
+package dev.sergevas.iot.env.application.port.in.bmp180;
 
 import dev.sergevas.iot.env.domain.bmp180.Bmp180Pressure;
 import dev.sergevas.iot.env.domain.bmp180.Bmp180Readings;

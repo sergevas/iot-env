@@ -1,6 +1,6 @@
 package dev.sergevas.iot.env.adapter.in.http.bmp180;
 
-import dev.sergevas.iot.env.application.port.bmp180.Bmp180UseCase;
+import dev.sergevas.iot.env.application.port.in.bmp180.Bmp180UseCase;
 import dev.sergevas.iot.env.domain.SensorReadingsItemType;
 import dev.sergevas.iot.env.domain.SensorReadingsType;
 import dev.sergevas.iot.env.infra.log.interceptor.Loggable;
@@ -12,7 +12,7 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
-import static dev.sergevas.iot.env.application.port.bmp180.ToSensorReadingsTypeMapper.*;
+import static dev.sergevas.iot.env.application.port.in.bmp180.ToBmp180SensorReadingsTypeMapper.*;
 
 @Path("sensors/bmp180")
 public class Bmp180Resource {

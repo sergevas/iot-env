@@ -1,6 +1,6 @@
 package dev.sergevas.iot.env.application.service;
 
-import dev.sergevas.iot.env.application.port.in.Bh1750UseCase;
+import dev.sergevas.iot.env.application.port.in.bh1750.Bh1750UseCase;
 import dev.sergevas.iot.env.application.port.out.LightIntensityReader;
 import dev.sergevas.iot.env.domain.Bh1750Readings;
 import dev.sergevas.iot.env.infra.log.interceptor.Loggable;

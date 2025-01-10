@@ -1,4 +1,4 @@
-package dev.sergevas.iot.env.application.port.in;
+package dev.sergevas.iot.env.application.port.in.bh1750;
 
 import dev.sergevas.iot.env.domain.Bh1750Readings;
 

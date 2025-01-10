@@ -1,6 +1,6 @@
 package dev.sergevas.iot.env.application.service;
 
-import dev.sergevas.iot.env.application.port.in.Sht3xUseCase;
+import dev.sergevas.iot.env.application.port.in.sht3x.Sht3xUseCase;
 import dev.sergevas.iot.env.application.port.out.Sht3xSpec;
 import dev.sergevas.iot.env.domain.sht3x.HeaterState;
 import dev.sergevas.iot.env.domain.sht3x.Sht3xReadings;
